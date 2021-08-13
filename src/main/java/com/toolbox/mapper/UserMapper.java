@@ -8,18 +8,6 @@ import org.apache.ibatis.annotations.Select;
 
 import com.toolbox.domain.User;
 
-/**
- * @Version 1.0
- * @Author zixuan.yang
- * @Created 2021/8/13 17:35
- * @Description
- *              <p>
- * @Modification
- *               <p>
- *               Date Author Version Description
- *               <p>
- *               2021/8/13 zixuan.yang@hirain.com 1.0 create file
- */
 @Mapper
 public interface UserMapper {
 

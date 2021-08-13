@@ -1,6 +1,4 @@
-/*******************************************************************************
- * Copyright (c) 2021, 2021 Hirain Technologies Corporation.
- ******************************************************************************/
+
 package com.toolbox.mapper;
 
 import java.util.List;
@@ -12,18 +10,6 @@ import org.apache.ibatis.annotations.Update;
 
 import com.toolbox.domain.Note;
 
-/**
- * @Version 1.0
- * @Author zixuan.yang
- * @Created 2021/8/13 17:47
- * @Description
- *              <p>
- * @Modification
- *               <p>
- *               Date Author Version Description
- *               <p>
- *               2021/8/13 zixuan.yang@hirain.com 1.0 create file
- */
 @Mapper
 public interface NoteMapper {
 
