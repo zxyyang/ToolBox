@@ -5,6 +5,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * @Version 1.0
+ * @Author zixuan.yang
+ * @Created 2021/8/13 17:35
+ * @Description <p>
+ * @Modification <p>
+ * Date Author Version Description
+ * <p>
+ * 2021/8/13     zixuan.yang@hirain.com   1.0   create file
+ */
 @MapperScan
 @SpringBootConfiguration
 @SpringBootApplication
