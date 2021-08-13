@@ -14,7 +14,7 @@ import com.toolbox.domain.Note;
 public interface NoteMapper {
 
 	// 查询所有
-	@Select("select * from note")
+	@Select("select note_name as noteName,note_content as noteContent,note_remark as noteRemark,note_type as noteType from note")
 	List<Note> queryAll();
 
 	// 插入

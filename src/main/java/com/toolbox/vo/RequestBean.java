@@ -1,11 +1,16 @@
 package com.toolbox.vo;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Data
 public class RequestBean<T> {
+
+
+
 
 
     private Integer code;
@@ -18,31 +23,31 @@ public class RequestBean<T> {
         this.msg = msg;
     }
 
-    private RequestBean(Integer code, String msg, T data) {
+    private RequestBean(Integer code, String msg, T data)  {
         this.code = code;
         this.msg = msg;
-        this.data = JSON.toJSONdata;
+        this.data = data;
     }
 
     /**
      * 状态码 + 成功提示信息
      */
-    public static <T> RequestBean<T> Success(String msg) {
-        return new RequestBean<>(200,msg);
+    public static <T> RequestBean<T> Success() {
+        return new RequestBean<>(200,"success");
     }
 
     /**
      * 状态码 + 成功提示信息 + 数据
      */
-    public static <T> RequestBean<T> Success(String msg, T data) {
-        return new RequestBean<>(200, msg, data);
+    public static <T> RequestBean<T> Success( T data) throws JsonProcessingException {
+        return new RequestBean<>(200, "success",data);
     }
 
     /**
      * 状态码 + 错误信息
      */
-    public static <T> RequestBean<T> Error(String msg) {
-        return new RequestBean<>(500, msg);
+    public static <T> RequestBean<T> Error() {
+        return new RequestBean<>(500, "error");
     }
 
 
