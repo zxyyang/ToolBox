@@ -11,10 +11,10 @@ import org.apache.ibatis.annotations.Update;
 import com.toolbox.domain.Note;
 
 @Mapper
-public interface NoteMapper {
+public interface NoteMapper extends tk.mybatis.mapper.common.Mapper<Note> {
 
 	// 查询所有
-	@Select("select note_name as noteName,note_content as noteContent,note_remark as noteRemark,note_type as noteType from note")
+	@Select("select * from note")
 	List<Note> queryAll();
 
 	// 插入
