@@ -1,19 +1,15 @@
 package com.toolbox.service;
 
+import com.github.pagehelper.PageInfo;
 import com.toolbox.domain.Note;
-
-import java.util.List;
 
 public interface NoteService {
 
-    List<Note> queryAll();
+	PageInfo<Note> queryAll(Integer pageNumber, Integer pageSize);
 
+	Integer add(Note note);
 
-    Integer add(Note note);
+	Note queryByName(String noteName);
 
-
-    Note queryByName(String noteName);
-
-
-   Integer update(Note note);
+	Integer update(Note note);
 }

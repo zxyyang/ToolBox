@@ -29,4 +29,8 @@ public interface NoteMapper extends tk.mybatis.mapper.common.Mapper<Note> {
 	@Update("update note set  note_name = #{noteName},note_content = #{noteContent},note_remark = #{noteRemark},note_type = #{noteType}  where id = #{id}")
 	Integer update(Note note);
 
+	// count
+	@Select("select count(1) from note")
+	Integer count();
+
 }
