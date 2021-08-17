@@ -12,5 +12,5 @@ public class Role {
     @Column(name = "role_name")
     private String roleName;
     @Column(name = "permissions_id")
-    private Integer permissionsId;
+    private String permissionsId;
 }
