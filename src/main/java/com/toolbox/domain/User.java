@@ -1,21 +1,23 @@
 package com.toolbox.domain;
 
-import javax.persistence.Table;
-
 import lombok.Data;
+
+import javax.persistence.Table;
 
 @Data
 @Table(name = "users")
 public class User {
 
-	private Integer ID;
+    private Integer ID;
 
-	private String UserName;
+    private String UserName;
 
-	private String Password;
+    private String Password;
 
-	private String Salt;
+    private String Salt;
 
-	private String Label;
+    private String Label;
+
+    private Integer roleId;
 
 }
