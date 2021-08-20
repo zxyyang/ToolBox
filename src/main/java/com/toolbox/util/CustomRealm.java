@@ -1,13 +1,13 @@
 package com.toolbox.util;
 
+import com.toolbox.domain.User;
+import com.toolbox.mapper.UserMapper;
 import com.toolbox.service.LoginService;
 import com.toolbox.vo.PermissionsVO;
 import com.toolbox.vo.RoleVO;
 import com.toolbox.vo.UserVO;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
@@ -19,23 +19,25 @@ public class CustomRealm extends AuthorizingRealm {
 
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * @MethodName doGetAuthorizationInfo
      * @Description 权限配置类
      * @Param [principalCollection]
      * @Return AuthorizationInfo
-     * @Author WangShiLin
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         //获取登录用户名
-        String name = (String) principalCollection.getPrimaryPrincipal();
+        User user = (User) SecurityUtils.getSubject().getPrincipal();
+        // String name = (String) principalCollection.getPrimaryPrincipal().getClass().getName();
         //查询用户名称
-        UserVO user = loginService.getUserByName(name);
+        UserVO userVO = loginService.getUserByName(user.getUserName());
         //添加角色和权限
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        for (RoleVO role : user.getRoleVOList()) {
+        for (RoleVO role : userVO.getRoleVOList()) {
             //添加角色
             simpleAuthorizationInfo.addRole(role.getRoleName());
             //添加权限
@@ -57,16 +59,25 @@ public class CustomRealm extends AuthorizingRealm {
         if (StringUtils.isEmpty(authenticationToken.getPrincipal())) {
             return null;
         }
-        //获取用户信息
-        String name = authenticationToken.getPrincipal().toString();
-        UserVO user = loginService.getUserByName(name);
+
+        //获取登录用户名
+        UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) authenticationToken;
+        String username = usernamePasswordToken.getUsername();
+        String password = new String(usernamePasswordToken.getPassword());
+
+        //查询用户名称
+        User user = userMapper.queryByName(username);
         if (user == null) {
-            //这里返回后会报出对应异常
-            return null;
-        } else {
-            //这里验证authenticationToken和simpleAuthenticationInfo的信息
-            SimpleAuthenticationInfo simpleAuthenticationInfo = new SimpleAuthenticationInfo(name, user.getPassword().toString(), getName());
-            return simpleAuthenticationInfo;
+            throw new UnknownAccountException("用户名或密码错误！");
+        } else if (!password.equals(user.getPassword())) {
+            throw new UnknownAccountException("用户名或密码错误！");
+
         }
+
+        //调用 CredentialsMatcher 校验 还需要创建一个类 继承CredentialsMatcher  如果在上面校验了,这个就不需要了
+        //配置自定义权限登录器 参考博客：
+
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(user, user.getPassword(), getName());
+        return info;
     }
 }

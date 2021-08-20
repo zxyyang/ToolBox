@@ -21,15 +21,16 @@ public class LoginController {
 
     @GetMapping("/login")
     public String login(UserVO user) {
+        user.setRememberMe(true);
+        //用户认证信息
+        Subject subject = SecurityUtils.getSubject();
+        //如果有点击  记住我
+        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword(), user.getRememberMe());
+
         if (StringUtils.isEmpty(user.getUserName()) || StringUtils.isEmpty(user.getPassword())) {
             return "请输入用户名和密码！";
         }
-        //用户认证信息
-        Subject subject = SecurityUtils.getSubject();
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(
-                user.getUserName(),
-                user.getPassword()
-        );
+
         try {
             //进行验证，这里可以捕获异常，然后返回对应信息
             subject.login(usernamePasswordToken);

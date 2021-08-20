@@ -16,5 +16,7 @@ public class UserVO {
 
     private String Label;
 
+    private Boolean rememberMe;
+
     private List<RoleVO> roleVOList;
 }
