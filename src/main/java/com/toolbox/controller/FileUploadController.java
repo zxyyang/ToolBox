@@ -61,12 +61,12 @@ public class FileUploadController {
     @GetMapping("/files/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable("filename") String filename) throws UnsupportedEncodingException {
         //文件中文名解密
-        String fileNameEncode = URLDecoder.decode(URLDecoder.decode(filename, "UTF-8"));
+        String fileNameEncode = URLDecoder.decode(filename, "UTF-8");
         Resource file = fileStorageService.load(fileNameEncode);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment;filename=\"" + file.getFilename() + "\"")
+                        "attachment;filename=\"" + URLEncoder.encode(file.getFilename(), "UTF-8") + "\"")
                 .body(file);
     }
 }
