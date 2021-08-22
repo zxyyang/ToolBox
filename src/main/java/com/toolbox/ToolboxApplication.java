@@ -6,9 +6,9 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+@SpringBootApplication(scanBasePackages = "com.toolbox")
 @MapperScan("com.toolbox.mapper")
 @SpringBootConfiguration()
-@SpringBootApplication
 @EnableSwagger2
 public class ToolboxApplication {
 

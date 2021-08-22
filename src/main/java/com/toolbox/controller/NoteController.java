@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.pagehelper.PageInfo;
 import com.toolbox.domain.Note;
 import com.toolbox.service.NoteService;
-import com.toolbox.vo.RequestBean;
+import com.toolbox.valueobject.RequestBean;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

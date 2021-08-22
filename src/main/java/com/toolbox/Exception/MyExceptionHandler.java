@@ -1,4 +1,4 @@
-package com.toolbox.util;
+package com.toolbox.Exception;
 
 
 import lombok.extern.slf4j.Slf4j;

@@ -62,6 +62,7 @@ public class shiroConfig {
         // 过滤链定义，从上向下顺序执行，一般将 /**放在最为下边 一定要注意顺序,否则就不好使了
         Map<String, String> map = new LinkedHashMap<>();
         //配置不登录可以访问的资源，anon 表示资源都可以匿名访问
+        map.put("/file/**", "anon");
         map.put("/login", "anon");
         map.put("/", "anon");
         map.put("/css/**", "anon");
@@ -83,7 +84,14 @@ public class shiroConfig {
         return shiroFilterFactoryBean;
     }
 
-
+    /**
+     * 开启shiro 注解模式
+     * 可以在controller中的方法前加上注解
+     * 如 @RequiresPermissions("userInfo:add")
+     *
+     * @param securityManager
+     * @return
+     */
     @Bean
     public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
@@ -107,8 +115,8 @@ public class shiroConfig {
         //防止xss读取cookie
         simpleCookie.setHttpOnly(true);
         simpleCookie.setPath("/");
-        //<!-- 记住我cookie生效时间30天 ,单位秒;-->
-        simpleCookie.setMaxAge(2592000);
+        //<!-- 记住我cookie生效时间1小时 ,单位秒;-->
+        simpleCookie.setMaxAge(3600);
         return simpleCookie;
     }
 
