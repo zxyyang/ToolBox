@@ -9,6 +9,11 @@
       "name": "mconfig.swagger-ui-open",
       "type": "java.lang.String",
       "description": "Description for mconfig.swagger-ui-open."
+    },
+    {
+      "name": "pagehelper.helper-dialect",
+      "type": "java.lang.String",
+      "description": "Description for pagehelper.helper-dialect."
     }
   ]
 }

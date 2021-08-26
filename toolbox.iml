@@ -22,7 +22,12 @@
       </configuration>
     </facet>
     <facet type="Spring" name="Spring">
-      <configuration />
+      <configuration>
+        <fileset id="fileset" name="Mybatis Config" removed="false">
+          <dependency>spring_boot_com.toolbox.ToolboxApplication</dependency>
+          <file>file://$MODULE_DIR$/src/main/resources/mybatis-config.xml</file>
+        </fileset>
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
@@ -151,9 +156,12 @@
     <orderEntry type="library" name="Maven: tk.mybatis:mapper:4.1.5" level="project" />
     <orderEntry type="library" name="Maven: javax.persistence:persistence-api:1.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.12.3" level="project" />
-    <orderEntry type="library" name="Maven: com.github.pagehelper:pagehelper:5.2.0" level="project" />
-    <orderEntry type="library" name="Maven: com.github.jsqlparser:jsqlparser:3.2" level="project" />
+    <orderEntry type="library" name="Maven: com.github.pagehelper:pagehelper-spring-boot-starter:1.2.5" level="project" />
+    <orderEntry type="library" name="Maven: com.github.pagehelper:pagehelper-spring-boot-autoconfigure:1.2.5" level="project" />
+    <orderEntry type="library" name="Maven: com.github.pagehelper:pagehelper:5.1.4" level="project" />
+    <orderEntry type="library" name="Maven: com.github.jsqlparser:jsqlparser:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.mybatis:mybatis:3.5.7" level="project" />
+    <orderEntry type="library" name="Maven: log4j:log4j:1.2.17" level="project" />
     <orderEntry type="library" name="Maven: io.springfox:springfox-swagger2:2.9.2" level="project" />
     <orderEntry type="library" name="Maven: io.swagger:swagger-annotations:1.5.20" level="project" />
     <orderEntry type="library" name="Maven: io.swagger:swagger-models:1.5.20" level="project" />
