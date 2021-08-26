@@ -3,8 +3,11 @@ package com.toolbox.util;
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,11 +18,14 @@ import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
+import com.qiniu.storage.model.BatchStatus;
 import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.storage.model.FetchRet;
 import com.qiniu.storage.model.FileInfo;
 import com.qiniu.util.Auth;
 import com.qiniu.util.UrlSafeBase64;
 import com.toolbox.config.QiNiuConfig;
+import com.toolbox.service.FileService;
 import com.toolbox.valueobject.Files;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +39,20 @@ import okhttp3.ResponseBody;
  **/
 @Slf4j
 public class QiNiuUtil {
+
+	@Autowired
+	private FileService fileService;
+
+	/***
+	 * 配置类
+	 */
+	public static BucketManager configBucketManager() {
+		Configuration cfg = new Configuration(QiNiuConfig.getInstance().getZone());
+		// ...生成上传凭证，然后准备上传
+		Auth auth = Auth.create(QiNiuConfig.getInstance().getAccessKey(), QiNiuConfig.getInstance().getSecretKey());
+		BucketManager bucketManager = new BucketManager(auth, cfg);
+		return bucketManager;
+	}
 
 	/**
 	 * 上传本地文件
@@ -210,7 +230,9 @@ public class QiNiuUtil {
 	}
 
 	/**
-	 * 下载到服务器
+	 * * 下载到服务器
+	 *
+	 * @param targetUrl
 	 */
 	public static void downloadBase(String targetUrl) {
 		// 获取downloadUrl
@@ -221,7 +243,10 @@ public class QiNiuUtil {
 	}
 
 	/**
-	 * 通过发送http get 请求获取文件资源
+	 * * 通过发送http get 请求获取文件资源
+	 *
+	 * @param url
+	 * @param filepath
 	 */
 	private static void download(String url, String filepath) {
 		OkHttpClient client = new OkHttpClient();
@@ -245,8 +270,12 @@ public class QiNiuUtil {
 		}
 	}
 
-	/***
-	 * 调用浏览器下载
+	/**
+	 * * 调用浏览器下载
+	 *
+	 * @param fileName
+	 * @return
+	 * @throws IOException
 	 */
 	public static Resource downloadByIE(String fileName) throws IOException {
 		String domain = QiNiuConfig.getInstance().getDomainOfBucket();
@@ -263,7 +292,10 @@ public class QiNiuUtil {
 	}
 
 	/**
-	 * 读取字节输入流内容
+	 * * 读取字节输入流内容
+	 *
+	 * @param is
+	 * @return
 	 */
 	private static byte[] readInputStream(InputStream is) {
 		ByteArrayOutputStream writer = new ByteArrayOutputStream();
@@ -280,8 +312,11 @@ public class QiNiuUtil {
 		return writer.toByteArray();
 	}
 
-	/**
-	 * 获取下载文件路径，即：donwloadUrl
+	/***
+	 * * 获取下载文件路径，即：donwloadUrl
+	 *
+	 * @param targetUrl
+	 * @return
 	 */
 	public static String getDownloadUrl(String targetUrl) {
 		String downloadUrl = getAuth().privateDownloadUrl(targetUrl);
@@ -292,12 +327,7 @@ public class QiNiuUtil {
 	 * 删除文件
 	 */
 	public static Boolean delete(String fileName) {
-		Configuration cfg = new Configuration(QiNiuConfig.getInstance().getZone());
-		// ...其他参数参考类注释
-		UploadManager uploadManager = new UploadManager(cfg);
-		// ...生成上传凭证，然后准备上传
-		Auth auth = Auth.create(QiNiuConfig.getInstance().getAccessKey(), QiNiuConfig.getInstance().getSecretKey());
-		BucketManager bucketManager = new BucketManager(auth, cfg);
+		BucketManager bucketManager = configBucketManager();
 		try {
 			bucketManager.delete(QiNiuConfig.getInstance().getBucket(), fileName);
 			return true;
@@ -309,15 +339,12 @@ public class QiNiuUtil {
 	}
 
 	/***
-	 * 文件目录
+	 * * 文件目录
+	 *
+	 * @return
 	 */
 	public static List<Files> directory() {
-		Configuration cfg = new Configuration(QiNiuConfig.getInstance().getZone());
-		// ...其他参数参考类注释
-		UploadManager uploadManager = new UploadManager(cfg);
-		// ...生成上传凭证，然后准备上传
-		Auth auth = Auth.create(QiNiuConfig.getInstance().getAccessKey(), QiNiuConfig.getInstance().getSecretKey());
-		BucketManager bucketManager = new BucketManager(auth, cfg);
+		BucketManager bucketManager = configBucketManager();
 		// 文件名前缀
 		String prefix = "";
 		// 每次迭代的长度限制，最大1000，推荐值 1000
@@ -347,4 +374,125 @@ public class QiNiuUtil {
 		return filesList;
 	}
 
+	/**
+	 * 获取该目录下的文件信息集合
+	 * 
+	 * @param name
+	 * @return
+	 */
+
+	public static List<Files> listByPath(String[] name) {
+		BucketManager bucketManager = configBucketManager();
+
+		try {
+			BucketManager.BatchOperations batchOperations = new BucketManager.BatchOperations();
+			batchOperations.addStatOps(QiNiuConfig.getInstance().getBucket(), name);
+			Response response = bucketManager.batch(batchOperations);
+			BatchStatus[] batchStatusList = response.jsonToObject(BatchStatus[].class);
+			List<Files> filesList = new ArrayList<>();
+			for (int i = 0; i < batchStatusList.length; i++) {
+				Files files = new Files();
+				if (batchStatusList[i].code == 200) {
+					files.setKey(name[i]);
+					files.setFsize(batchStatusList[i].data.fsize);
+					files.setMimeType(batchStatusList[i].data.mimeType);
+					files.setPutTime(String.valueOf(batchStatusList[i].data.putTime));
+				} else {
+					files.setKey(name[i] + "(文件云端获取失败)");
+				}
+				filesList.add(files);
+			}
+			return filesList;
+
+		} catch (QiniuException e) {
+			System.out.println(e.response.toString());
+			return null;
+		}
+
+	}
+
+	/***
+	 * * 修改文件名
+	 * * 源空间 目标空间 源文件名 目标文件名 描述
+	 * * BucketA BucketA KeyA KeyB 相当于同空间文件重命名
+	 * * BucketA BucketB KeyA KeyA 移动文件到BucketB，文件名一致
+	 * * BucketA BucketB KeyA KeyB 移动文件到BucketB，文件名变成KeyB
+	 *
+	 * @param originName
+	 * @param objectName
+	 * @return
+	 */
+
+	public static Boolean reNameOrMove(String originName, String objectName) {
+
+		BucketManager bucketManager = configBucketManager();
+		try {
+			bucketManager.move(QiNiuConfig.getInstance().getBucket(), originName, QiNiuConfig.getInstance().getBucket(), objectName);
+
+		} catch (QiniuException e) {
+			System.out.println(e.response.toString());
+			return false;
+		}
+		return true;
+	}
+
+	/***
+	 * 网络资源存储在云端
+	 *
+	 * @param KEY
+	 * @param SrcURL
+	 * @return
+	 */
+	public static String networkResources(String KEY, String SrcURL) {
+		BucketManager bucketManager = configBucketManager();
+		try {
+			FetchRet fetchRet = bucketManager.fetch(SrcURL, QiNiuConfig.getInstance().getBucket(), KEY);
+			// 修改存储名字，带后缀名
+			String[] type = fetchRet.mimeType.split("/");
+			String UrlFilename = fetchRet.key + "." + type[1];
+			reNameOrMove(fetchRet.key, UrlFilename);
+			return UrlFilename;
+
+		} catch (QiniuException e) {
+			System.out.println(e.response.toString());
+			return null;
+		}
+
+	}
+
+	// TODO
+
+	/**
+	 * * 批量删除
+	 * * 需要添加随着删除内容进度条效果线程
+	 * 
+	 * @param fileNameList
+	 * @return
+	 */
+	public static Map<String, String> batchDelete(String[] fileNameList) {
+		BucketManager bucketManager = configBucketManager();
+		Map<String, String> map = new HashMap<>();
+		try {
+			BucketManager.BatchOperations batchOperations = new BucketManager.BatchOperations();
+			batchOperations.addDeleteOp(QiNiuConfig.getInstance().getBucket(), fileNameList);
+			Response response = bucketManager.batch(batchOperations);
+			BatchStatus[] batchStatuses = response.jsonToObject(BatchStatus[].class);
+
+			for (int i = 0; i < fileNameList.length; i++) {
+				BatchStatus status = batchStatuses[i];
+				String key = fileNameList[i];
+				if (status.code == 200) {
+					System.out.println(key + "删除成功!");
+					map.put(key, "succeed");
+				} else {
+					System.out.println(key + "删除失败!");
+					map.put(key, "failed");
+				}
+			}
+
+		} catch (QiniuException e) {
+			System.out.println(e.response.toString());
+		}
+		return map;
+	}
 }
