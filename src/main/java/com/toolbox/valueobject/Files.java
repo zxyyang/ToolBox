@@ -1,4 +1,3 @@
-
 package com.toolbox.valueobject;
 
 import lombok.Data;
@@ -6,14 +5,14 @@ import lombok.Data;
 @Data
 public class Files {
 
-	private String key;
+    private String name;
 
-	private Long fsize;
+    private Long size;
 
-	private String mimeType;
+    private String mimeType;
 
-	private String putTime;
+    private String putTime;
 
-	private String endUser;
+    private String endUser;
 
 }

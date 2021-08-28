@@ -15,6 +15,7 @@ import com.qiniu.util.UrlSafeBase64;
 import com.toolbox.config.QiNiuConfig;
 import com.toolbox.service.FileService;
 import com.toolbox.valueobject.Files;
+import com.toolbox.vo.down_ret;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -27,10 +28,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 七牛上传下载工具类
@@ -281,6 +280,19 @@ public class QiNiuUtil {
 
     }
 
+
+    public static down_ret downloadByUrl(String fileName) throws IOException {
+        String domain = QiNiuConfig.getInstance().getDomainOfBucket();
+        // 封装下载链接
+        String targetUrl = "http://" + domain + "/" + fileName;
+        String downloadUrl = getDownloadUrl(targetUrl);
+        down_ret down_ret = new down_ret();
+
+        down_ret.setFileName(fileName);
+        down_ret.setFileUrl(downloadUrl);
+        return down_ret;
+    }
+
     /**
      * * 读取字节输入流内容
      *
@@ -354,7 +366,7 @@ public class QiNiuUtil {
                 files.setName(item.key);
                 files.setSize(item.fsize);
                 files.setMimeType(item.mimeType);
-                files.setPutTime(item.putTime);
+                files.setPutTime(String.valueOf(item.putTime));
                 files.setEndUser(item.endUser);
                 filesList.add(files);
             }
@@ -386,9 +398,18 @@ public class QiNiuUtil {
                     files.setName(name[i]);
                     files.setSize(batchStatusList[i].data.fsize);
                     files.setMimeType(batchStatusList[i].data.mimeType);
-                    files.setPutTime(batchStatusList[i].data.putTime);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    dateFormat.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+                    long signtime = ((batchStatusList[i].data.putTime)) / 10000;
+                    String lastSignTime = dateFormat.format(new Date(signtime));
+                    files.setPutTime(lastSignTime);
                 } else {
-                    files.setName(name[i] + "(文件云端获取失败)");
+                    if (name[i].endsWith("/")) {
+                        files.setName(name[i]);
+                    } else {
+
+                        files.setName(name[i] + "(文件云端获取失败)");
+                    }
                 }
                 filesList.add(files);
             }
