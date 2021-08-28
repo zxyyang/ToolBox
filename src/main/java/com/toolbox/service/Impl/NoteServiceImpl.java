@@ -39,4 +39,9 @@ public class NoteServiceImpl implements NoteService {
     public Integer update(Note note) {
         return noteMapper.update(note);
     }
+
+    @Override
+    public Note selectById(Integer id) {
+        return noteMapper.selectById(id);
+    }
 }
