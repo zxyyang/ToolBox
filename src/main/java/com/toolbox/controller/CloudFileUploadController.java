@@ -5,6 +5,7 @@ import com.toolbox.service.FileService;
 import com.toolbox.util.QiNiuUtil;
 import com.toolbox.valueobject.Files;
 import com.toolbox.valueobject.RequestBean;
+import com.toolbox.vo.DeleteResult;
 import com.toolbox.vo.down_ret;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -19,7 +20,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @Api(value = "/cloudFile", tags = {"七牛文件存储"})
@@ -88,21 +88,20 @@ public class CloudFileUploadController {
 
     @ApiOperation(value = "/batchDelete", notes = "批量删除", httpMethod = "POST")
     @PostMapping("/batchDelete")
-    public RequestBean<Map<String, String>> batchDelete(String[] fileNameList) throws JsonProcessingException {
-        Map<String, String> stringStringMap = QiNiuUtil.batchDelete(fileNameList);
+    public RequestBean<List<DeleteResult>> batchDelete(String[] name) throws JsonProcessingException {
+        List<DeleteResult> deleteResultList = QiNiuUtil.batchDelete(name);
         List<String> list = new ArrayList<>();
 
         // 取出只有成功的操作key
-        for (Map.Entry<String, String> map : stringStringMap.entrySet()) {
-            if (map.getValue().equals("succeed")) {
-                list.add(map.getKey());
+        for (DeleteResult deleteResult : deleteResultList) {
+            if (deleteResult.getResult().equals("succeed")) {
+                list.add(deleteResult.getName());
             }
         }
         if (list.size() != 0) {
             String[] deleteVar = list.toArray(new String[list.size()]);
-            System.out.println(deleteVar);
             fileService.batchDelete(deleteVar);
-            return RequestBean.Success(stringStringMap);
+            return RequestBean.Success(deleteResultList);
         } else {
             return RequestBean.Error();
         }
@@ -119,5 +118,12 @@ public class CloudFileUploadController {
             return RequestBean.Error();
         }
 
+    }
+
+    @ApiOperation(value = "/makeDir", notes = "创建文件夹", httpMethod = "POST")
+    @PostMapping("/makeDir")
+    public RequestBean<Boolean> makeDir(String name, @RequestParam(defaultValue = "/") String path) {
+        fileService.add(name, path);
+        return RequestBean.Success();
     }
 }

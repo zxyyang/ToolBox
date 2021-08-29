@@ -15,6 +15,7 @@ import com.qiniu.util.UrlSafeBase64;
 import com.toolbox.config.QiNiuConfig;
 import com.toolbox.service.FileService;
 import com.toolbox.valueobject.Files;
+import com.toolbox.vo.DeleteResult;
 import com.toolbox.vo.down_ret;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
@@ -29,7 +30,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 
 /**
  * 七牛上传下载工具类
@@ -480,9 +484,9 @@ public class QiNiuUtil {
      * @param fileNameList
      * @return
      */
-    public static Map<String, String> batchDelete(String[] fileNameList) {
+    public static List<DeleteResult> batchDelete(String[] fileNameList) {
         BucketManager bucketManager = configBucketManager();
-        Map<String, String> map = new HashMap<>();
+        List<DeleteResult> deleteResults = new ArrayList<>();
         try {
             BucketManager.BatchOperations batchOperations = new BucketManager.BatchOperations();
             batchOperations.addDeleteOp(QiNiuConfig.getInstance().getBucket(), fileNameList);
@@ -490,20 +494,20 @@ public class QiNiuUtil {
             BatchStatus[] batchStatuses = response.jsonToObject(BatchStatus[].class);
 
             for (int i = 0; i < fileNameList.length; i++) {
+                DeleteResult deleteResult = new DeleteResult();
                 BatchStatus status = batchStatuses[i];
-                String key = fileNameList[i];
+                deleteResult.setName(fileNameList[i]);
                 if (status.code == 200) {
-                    System.out.println(key + "删除成功!");
-                    map.put(key, "succeed");
+                    deleteResult.setResult("succeed");
                 } else {
-                    System.out.println(key + "删除失败!");
-                    map.put(key, "failed");
+                    deleteResult.setResult("failed");
                 }
+                deleteResults.add(deleteResult);
             }
 
         } catch (QiniuException e) {
             System.out.println(e.response.toString());
         }
-        return map;
+        return deleteResults;
     }
 }

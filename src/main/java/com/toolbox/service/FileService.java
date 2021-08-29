@@ -1,25 +1,22 @@
-
 package com.toolbox.service;
-
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
 
 import com.toolbox.domain.File;
 
+import java.util.List;
+
 public interface FileService {
 
-	Integer add(String fileName, String filePath);
+    Integer add(String fileName, String filePath);
 
-	Integer updateName(String originFileName, String ObjectFileName);
+    Integer updateName(String originFileName, String ObjectFileName);
 
-	Integer batchDelete(@Param("name") String[] name);
+    Integer batchDelete(String[] name);
 
-	List<File> selectAll();
+    List<File> selectAll();
 
-	String selectPathByName(String fileName);
+    String selectPathByName(String fileName);
 
-	Integer updatePath(String fileOldPath, String fileNewPath);
+    Integer updatePath(String fileOldPath, String fileNewPath);
 
-	String[] selectName(String path);
+    String[] selectName(String path);
 }
