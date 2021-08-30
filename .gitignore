@@ -1,8 +1,3 @@
-
-target/classes/com/toolbox/vo/FilePage.class
-target/classes/com/toolbox/service/Impl/FileServiceImpl.class
-target/classes/com/toolbox/service/FileService.class
-target/classes/com/toolbox/mapper/FileMapper.class
-target/classes/com/toolbox/domain/File.class
 src/main/resources/application.yml
 *.yml
+
