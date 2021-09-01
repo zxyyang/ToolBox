@@ -1,69 +1,49 @@
 package com.toolbox.controller;
 
-
-import com.toolbox.vo.UserVO;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.apache.shiro.subject.Subject;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.toolbox.valueobject.RequestBean;
+import com.toolbox.vo.UserVO;
+
+import io.swagger.annotations.Api;
+
 @RestController
-@Slf4j
+@Api(value = "/login", tags = { "登录" }, description = "登录接口")
 public class LoginController {
 
-    @GetMapping("/login")
-    public String login(UserVO user) {
-        user.setRememberMe(true);
-        //用户认证信息
-        Subject subject = SecurityUtils.getSubject();
-        //如果有点击  记住我
-        UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword(), user.getRememberMe());
+	@GetMapping("/login")
+	public RequestBean<String> login(UserVO user) {
+		user.setRememberMe(false);
+		// 用户认证信息
+		Subject subject = SecurityUtils.getSubject();
+		// 如果有点击 记住我
+		UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword(), user.getRememberMe());
 
-        if (StringUtils.isEmpty(user.getUserName()) || StringUtils.isEmpty(user.getPassword())) {
-            return "请输入用户名和密码！";
-        }
+		if (StringUtils.isEmpty(user.getUserName()) || StringUtils.isEmpty(user.getPassword())) {
+			return RequestBean.Error("用户名或者密码错误！");
+		}
 
-        try {
-            //进行验证，这里可以捕获异常，然后返回对应信息
-            subject.login(usernamePasswordToken);
-//            subject.checkRole("admin");
-//            subject.checkPermissions("query", "add");
-        } catch (UnknownAccountException e) {
-            log.error("用户名不存在！", e);
-            return "用户名不存在！";
-        } catch (AuthenticationException e) {
-            log.error("账号或密码错误！", e);
-            return "账号或密码错误！";
-        } catch (AuthorizationException e) {
-            log.error("没有权限！", e);
-            return "没有权限";
-        }
-        return "login success";
-    }
+		try {
+			// 进行验证，这里可以捕获异常，然后返回对应信息
+			subject.login(usernamePasswordToken);
+			// subject.checkRole("admin");
+			// subject.checkPermissions("query", "add");
+		} catch (UnknownAccountException e) {
+			return RequestBean.Error("用户名或者密码错误！");
+		} catch (AuthenticationException e) {
+			return RequestBean.Error("用户名或者密码错误！");
+		} catch (AuthorizationException e) {
+			return RequestBean.Error(400, "没有权限！");
+		}
+		return RequestBean.Success();
+	}
 
-    @RequiresRoles("admin")
-    @GetMapping("/admin")
-    public String admin() {
-        return "admin success!";
-    }
-
-    @RequiresPermissions("query")
-    @GetMapping("/index")
-    public String index() {
-        return "index success!";
-    }
-
-    @RequiresPermissions("add")
-    @GetMapping("/add")
-    public String add() {
-        return "add success!";
-    }
 }

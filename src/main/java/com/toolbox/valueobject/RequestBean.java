@@ -45,4 +45,18 @@ public class RequestBean<T> {
 		return new RequestBean<>(500, "error");
 	}
 
+	/**
+	 * 状态码 + 错误信息(自定义)
+	 */
+	public static <T> RequestBean<T> Error(String msg) {
+		return new RequestBean<>(500, msg);
+	}
+
+	/**
+	 * 状态码（自定义） + 错误信息(自定义)
+	 */
+	public static <T> RequestBean<T> Error(Integer code, String msg) {
+		return new RequestBean<>(code, msg);
+	}
+
 }

@@ -1,22 +1,23 @@
 package com.toolbox.vo;
 
-import lombok.Data;
-
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class UserVO {
-    private Integer ID;
 
-    private String UserName;
+	private Integer id;
 
-    private String Password;
+	private String userName;
 
-    private String Salt;
+	private String password;
 
-    private String Label;
+	private String salt;
 
-    private Boolean rememberMe;
+	private String label;
 
-    private List<RoleVO> roleVOList;
+	private Boolean rememberMe;
+
+	private List<RoleVO> roleVOList;
 }
