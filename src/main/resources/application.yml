@@ -1,10 +1,13 @@
 spring:
+  thymeleaf:
+    cache: false
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://47.117.143.194:3306/toolbox?serverTimezone=GMT%2B8&useSSL=true
     username: root
     password: root
   servlet:
+
     multipart:
       #限制上传文件的大小
       #单次请求的总文件大小
@@ -16,6 +19,13 @@ mconfig:
   swagger-ui-open: ture
 
 mybatis:
+  type-aliases-package: com.neo.entity
   # spring boot集成mybatis的方式打印sql
   configuration:
+    map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+server:
+  max-http-header-size: 1024000
+  port: 8081
+
