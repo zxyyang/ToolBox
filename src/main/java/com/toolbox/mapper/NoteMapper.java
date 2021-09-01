@@ -2,10 +2,7 @@ package com.toolbox.mapper;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import com.toolbox.domain.Note;
 
@@ -31,4 +28,7 @@ public interface NoteMapper extends tk.mybatis.mapper.common.Mapper<Note> {
 	@Select("SELECT * FROM note where id =#{id}")
 	Note selectById(Integer id);
 
+	@Delete("<script>" + "delete from note where id in"
+			+ "<foreach collection ='ids' open='(' item='ids' separator = ',' close=')'> #{ids} </foreach>" + "" + "</script>")
+	Integer deleteNote(Integer[] ids);
 }

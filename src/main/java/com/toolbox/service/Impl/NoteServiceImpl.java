@@ -53,4 +53,9 @@ public class NoteServiceImpl implements NoteService {
 		return noteMapper.selectById(id);
 	}
 
+	@Override
+	public Integer deleteNote(Integer[] ids) {
+		return noteMapper.deleteNote(ids);
+	}
+
 }

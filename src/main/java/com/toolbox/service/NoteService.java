@@ -15,4 +15,6 @@ public interface NoteService {
 
 	Note selectById(Integer id);
 
+	Integer deleteNote(Integer[] ids);
+
 }

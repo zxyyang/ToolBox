@@ -52,4 +52,10 @@ public class NoteController {
 		return RequestBean.Success(noteService.queryByName(pageNumber, pageSize, noteName)); // 查询的数据
 	}
 
+	@ApiOperation(value = "/delete", notes = "删除", httpMethod = "POST")
+	@PostMapping("/delete")
+	public RequestBean<Integer> delete(Integer[] ids) throws JsonProcessingException {
+		return RequestBean.Success(noteService.deleteNote(ids));
+	}
+
 }

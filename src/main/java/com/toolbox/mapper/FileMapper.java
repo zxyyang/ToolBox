@@ -1,32 +1,36 @@
 package com.toolbox.mapper;
 
-import com.toolbox.domain.File;
+import java.util.List;
+
 import org.apache.ibatis.annotations.*;
 
-import java.util.List;
+import com.toolbox.domain.File;
 
 @Mapper
 public interface FileMapper {
 
-    @Select("select file_name from file where file_path = #{path}")
-    String[] selectName(String path);
+	@Select("select * from file where  file_name like  concat('%',#{name},'%')")
+	List<File> selectByName(String name);
 
-    @Insert("insert into file (file_name,file_path) values(#{fileName},#{filePath}) ")
-    Integer add(String fileName, String filePath);
+	@Select("select file_name from file where file_path = #{path}")
+	String[] selectName(String path);
 
-    @Update("update file set file_name = #{ObjectFileName} where id =#{originFileName}")
-    Integer updateName(String originFileName, String ObjectFileName);
+	@Insert("insert into file (file_name,file_path) values(#{fileName},#{filePath}) ")
+	Integer add(String fileName, String filePath);
 
-    @Select("select file_path  from file where file_name = #{fileName} ")
-    String selectPathByName(String fileName);
+	@Update("update file set file_name = #{ObjectFileName} where id =#{originFileName}")
+	Integer updateName(String originFileName, String ObjectFileName);
 
-    @Select("select *  from file ")
-    List<File> selectAll();
+	@Select("select file_path  from file where file_name = #{fileName} ")
+	String selectPathByName(String fileName);
 
-    @Delete("<script>" + "delete from file where file_name in"
-            + "<foreach collection ='name' open='(' item='name' separator = ',' close=')'> #{name} </foreach>" + "" + "</script>")
-    Integer batchDelete(@Param("name") String[] name);
+	@Select("select *  from file ")
+	List<File> selectAll();
 
-    @Update("UPDATE file SET file_path = #{fileNewPath} WHERE file_path = #{fileOldPath}")
-    Integer updatePath(String fileOldPath, String fileNewPath);
+	@Delete("<script>" + "delete from file where file_name in"
+			+ "<foreach collection ='name' open='(' item='name' separator = ',' close=')'> #{name} </foreach>" + "" + "</script>")
+	Integer batchDelete(@Param("name") String[] name);
+
+	@Update("UPDATE file SET file_path = #{fileNewPath} WHERE file_path = #{fileOldPath}")
+	Integer updatePath(String fileOldPath, String fileNewPath);
 }
