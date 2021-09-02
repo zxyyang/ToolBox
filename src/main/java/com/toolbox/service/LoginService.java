@@ -4,5 +4,5 @@ import com.toolbox.vo.UserVO;
 
 public interface LoginService {
 
-    UserVO getUserByName(String getMapByName);
+	UserVO getUserByName(String userName);
 }

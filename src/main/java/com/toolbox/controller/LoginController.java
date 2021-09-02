@@ -14,7 +14,9 @@ import com.toolbox.valueobject.RequestBean;
 import com.toolbox.vo.UserVO;
 
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @Api(value = "/login", tags = { "登录" }, description = "登录接口")
 public class LoginController {
@@ -41,7 +43,7 @@ public class LoginController {
 		} catch (AuthenticationException e) {
 			return RequestBean.Error("用户名或者密码错误！");
 		} catch (AuthorizationException e) {
-			return RequestBean.Error(400, "没有权限！");
+			return RequestBean.Error("没有权限!");
 		}
 		return RequestBean.Success();
 	}

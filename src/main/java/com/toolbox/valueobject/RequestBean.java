@@ -39,6 +39,13 @@ public class RequestBean<T> {
 	}
 
 	/**
+	 * 状态码 + 成功提示信息 + 数据
+	 */
+	public static <T> RequestBean<String> Success(String data) throws JsonProcessingException {
+		return new RequestBean<String>(200, "success", data);
+	}
+
+	/**
 	 * 状态码 + 错误信息
 	 */
 	public static <T> RequestBean<T> Error() {

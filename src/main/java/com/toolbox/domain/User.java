@@ -1,9 +1,10 @@
 package com.toolbox.domain;
 
-import lombok.Data;
+import java.io.Serializable;
 
 import javax.persistence.Table;
-import java.io.Serializable;
+
+import lombok.Data;
 
 /***
  * Serializable
@@ -13,16 +14,14 @@ import java.io.Serializable;
 @Table(name = "users")
 public class User implements Serializable {
 
-    private Integer ID;
+	private Integer ID;
 
-    private String UserName;
+	private String UserName;
 
-    private String Password;
+	private String Password;
 
-    private String Salt;
+	private String Salt;
 
-    private String Label;
-
-    private Integer roleId;
+	private String Label;
 
 }

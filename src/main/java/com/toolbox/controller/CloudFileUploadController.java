@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -32,6 +33,7 @@ public class CloudFileUploadController {
 	@Autowired
 	FileService fileService;
 
+	@RequiresPermissions(value = { "add" })
 	@ApiOperation(value = "/upload", notes = "上传文件", httpMethod = "POST")
 	@PostMapping("/upload")
 	public RequestBean<String> upload(@RequestParam("file") MultipartFile file, @RequestParam(defaultValue = "/") String path) {
@@ -47,6 +49,7 @@ public class CloudFileUploadController {
 		return RequestBean.Success();
 	}
 
+	@RequiresPermissions(value = { "down" })
 	@ApiOperation(value = "/downLoadByIe", notes = "调用浏览器下载文件", httpMethod = "GET")
 	@GetMapping("/downLoadByIe")
 	public ResponseEntity<Resource> downLoadByIe(String fileName) throws IOException {
@@ -55,6 +58,7 @@ public class CloudFileUploadController {
 				.body(file);
 	}
 
+	@RequiresPermissions(value = { "down" })
 	@ApiOperation(value = "/downLoad", notes = "url下载", httpMethod = "GET")
 	@GetMapping("/downLoad")
 	public RequestBean<down_ret> downLoad(String fileName) throws IOException {
@@ -62,6 +66,7 @@ public class CloudFileUploadController {
 		return RequestBean.Success(QiNiuUtil.downloadByUrl(fileName));
 	}
 
+	@RequiresPermissions(value = { "list" })
 	@ApiOperation(value = "/list", notes = "文件目录", httpMethod = "GET")
 	@GetMapping("/list")
 	public RequestBean<List<Files>> list() throws JsonProcessingException {
@@ -69,6 +74,7 @@ public class CloudFileUploadController {
 		return RequestBean.Success(directory);
 	}
 
+	@RequiresPermissions(value = { "list" })
 	@ApiOperation(value = "/listByPath", notes = "文件目录", httpMethod = "GET")
 	@GetMapping("/listByPath")
 	public RequestBean<List<Files>> listByPath(String path) throws JsonProcessingException {
@@ -76,6 +82,7 @@ public class CloudFileUploadController {
 		return RequestBean.Success(QiNiuUtil.listByPath(fileService.selectName(path)));
 	}
 
+	@RequiresPermissions(value = { "update" })
 	@ApiOperation(value = "/reName", notes = "修改名字", httpMethod = "POST")
 	@PostMapping("/reName")
 	public RequestBean<Boolean> reName(String originName, String objectName) {
@@ -89,6 +96,7 @@ public class CloudFileUploadController {
 
 	}
 
+	@RequiresPermissions(value = { "delete" })
 	@ApiOperation(value = "/batchDelete", notes = "批量删除", httpMethod = "POST")
 	@PostMapping("/batchDelete")
 	public RequestBean<List<DeleteResult>> batchDelete(String[] name) throws JsonProcessingException {
@@ -110,6 +118,7 @@ public class CloudFileUploadController {
 		}
 	}
 
+	@RequiresPermissions(value = { "add" })
 	@ApiOperation(value = "/networkResources", notes = "网络地址资源存储在云端", httpMethod = "POST")
 	@PostMapping("/networkResources")
 	public RequestBean<Boolean> networkResources(String fileName, String SrcURL, @RequestParam(defaultValue = "/") String path) {
@@ -123,6 +132,7 @@ public class CloudFileUploadController {
 
 	}
 
+	@RequiresPermissions(value = { "add" })
 	@ApiOperation(value = "/makeDir", notes = "创建文件夹", httpMethod = "POST")
 	@PostMapping("/makeDir")
 	public RequestBean<Boolean> makeDir(String name, @RequestParam(defaultValue = "/") String path) {
@@ -130,6 +140,7 @@ public class CloudFileUploadController {
 		return RequestBean.Success();
 	}
 
+	@RequiresPermissions(value = { "select" })
 	@ApiOperation(value = "/selectByName", notes = "查询文件", httpMethod = "GET")
 	@GetMapping("/selectByName")
 	public RequestBean<List<Files>> selectByName(String name) throws JsonProcessingException {
