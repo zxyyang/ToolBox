@@ -40,14 +40,14 @@ public class NoteController {
 	@RequiresPermissions(value = { "add" }) // list或者qurry权限
 	@ApiOperation(value = "/add", notes = "新增", httpMethod = "POST")
 	@PostMapping("/add")
-	public RequestBean<Integer> add(Note note) throws JsonProcessingException {
+	public RequestBean<Integer> add(@RequestBody Note note) throws JsonProcessingException {
 		return RequestBean.Success(noteService.add(note));
 	}
 
 	@RequiresPermissions(value = { "update" })
 	@ApiOperation(value = "/update", notes = "更新", httpMethod = "POST")
 	@PostMapping("/update")
-	public RequestBean<Integer> update(Note note) throws JsonProcessingException {
+	public RequestBean<Integer> update(@RequestBody Note note) throws JsonProcessingException {
 		return RequestBean.Success(noteService.update(note));
 	}
 

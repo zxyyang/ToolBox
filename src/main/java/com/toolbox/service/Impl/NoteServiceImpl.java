@@ -43,8 +43,9 @@ public class NoteServiceImpl implements NoteService {
 
 	@Override
 	public Integer update(Note note) {
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		note.setNoteTime(simpleDateFormat.format(new Date()));
+		String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+		SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+		note.setNoteTime(sdf.format(new Date()));
 		return noteMapper.update(note);
 	}
 

@@ -1,11 +1,19 @@
 package com.toolbox.vo;
 
+import java.io.Serializable;
 import java.util.List;
 
-import lombok.Data;
+import org.springframework.stereotype.Component;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Component
+@AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class UserVO {
+public class UserVO implements Serializable {
 
 	private Integer id;
 

@@ -86,15 +86,6 @@
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-redis:2.5.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.data:spring-data-keyvalue:2.5.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-context-support:5.3.9" level="project" />
-    <orderEntry type="library" name="Maven: io.lettuce:lettuce-core:6.1.4.RELEASE" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.66.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.66.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-resolver:4.1.66.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.66.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-codec:4.1.66.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty-transport:4.1.66.Final" level="project" />
-    <orderEntry type="library" name="Maven: io.projectreactor:reactor-core:3.4.8" level="project" />
-    <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-web:2.5.3" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-json:2.5.3" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.12.4" level="project" />
@@ -211,5 +202,14 @@
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib-common:1.5.21" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains.kotlin:kotlin-stdlib:1.5.21" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains:annotations:13.0" level="project" />
+    <orderEntry type="library" name="Maven: io.lettuce:lettuce-core:6.1.4.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-common:4.1.66.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-handler:4.1.66.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-resolver:4.1.66.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.1.66.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec:4.1.66.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-transport:4.1.66.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.projectreactor:reactor-core:3.4.8" level="project" />
+    <orderEntry type="library" name="Maven: org.reactivestreams:reactive-streams:1.0.3" level="project" />
   </component>
 </module>

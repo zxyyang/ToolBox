@@ -10,7 +10,7 @@ import com.toolbox.domain.Note;
 public interface NoteMapper extends tk.mybatis.mapper.common.Mapper<Note> {
 
 	// 查询所有
-	@Select("select id,note_name,note_remark,note_type,note_time from note")
+	@Select("select id,note_name,note_remark,note_type,note_time from note order by note_time  DESC")
 	List<Note> queryAll();
 
 	// 插入
@@ -22,7 +22,7 @@ public interface NoteMapper extends tk.mybatis.mapper.common.Mapper<Note> {
 	List<Note> queryByName(String noteName);
 
 	// 更新
-	@Update("update note set  note_name = #{noteName},note_content = #{noteContent},note_remark = #{noteRemark},note_type = #{noteType}  where id = #{id}")
+	@Update("update note set  note_name = #{noteName},note_content = #{noteContent},note_remark = #{noteRemark},note_type = #{noteType},note_time = #{noteTime}  where id = #{id}")
 	Integer update(Note note);
 
 	@Select("SELECT * FROM note where id =#{id}")
