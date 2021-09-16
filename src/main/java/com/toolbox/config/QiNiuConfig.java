@@ -24,9 +24,15 @@ public class QiNiuConfig {
 
 	private String bucket;
 
+	private String imageBucket;
+
+	private Zone imageZone;
+
 	private Zone zone;
 
 	private String domainOfBucket;
+
+	private String imageDomainOfBucket;
 
 	private long expireInSeconds;
 
@@ -36,8 +42,10 @@ public class QiNiuConfig {
 			prop.load(QiNiuConfig.class.getResourceAsStream("/qiniu.properties"));
 			accessKey = prop.getProperty("qiniu.access-key");
 			secretKey = prop.getProperty("qiniu.secret-key");
+			imageBucket = prop.getProperty("qiniu.image.bucket");
 			bucket = prop.getProperty("qiniu.bucket");
 			domainOfBucket = prop.getProperty("qiniu.domain-of-bucket");
+			imageDomainOfBucket = prop.getProperty("qiniu.image.domain-of-bucket");
 			expireInSeconds = Long.parseLong(prop.getProperty("qiniu.expire-in-seconds"));
 			String zoneName = prop.getProperty("qiniu.zone");
 			if (zoneName.equals("zone0")) {
@@ -49,6 +57,20 @@ public class QiNiuConfig {
 			} else if (zoneName.equals("zoneNa0")) {
 				zone = Zone.zoneNa0();
 			} else if (zoneName.equals("zoneAs0")) {
+				zone = Zone.zoneAs0();
+			} else {
+				throw new Exception("Zone对象配置错误！");
+			}
+			String imageZoneName = prop.getProperty("qiniu.image.zone");
+			if (imageZoneName.equals("zone0")) {
+				zone = Zone.zone0();
+			} else if (imageZoneName.equals("zone1")) {
+				zone = Zone.zone1();
+			} else if (imageZoneName.equals("zone2")) {
+				zone = Zone.zone2();
+			} else if (imageZoneName.equals("zoneNa0")) {
+				zone = Zone.zoneNa0();
+			} else if (imageZoneName.equals("zoneAs0")) {
 				zone = Zone.zoneAs0();
 			} else {
 				throw new Exception("Zone对象配置错误！");

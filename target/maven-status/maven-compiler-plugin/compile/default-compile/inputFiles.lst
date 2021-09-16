@@ -3,6 +3,7 @@ E:\GIt\ToolBox\src\main\java\com\toolbox\domain\Permissions.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\service\Impl\NoteServiceImpl.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\mapper\RoleMapper.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\util\ShiroSessionListener.java
+E:\GIt\ToolBox\src\main\java\com\toolbox\config\RedisConfig.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\service\Impl\RoleServiceImpl.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\service\Impl\LoginServiceImpl.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\valueobject\Files.java
@@ -22,6 +23,7 @@ E:\GIt\ToolBox\src\main\java\com\toolbox\mapper\FileMapper.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\controller\LoginController.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\Exception\FileUploadExceptionAdvice.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\config\FileUploadConfiguration.java
+E:\GIt\ToolBox\src\main\java\com\toolbox\util\RedisUtil.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\Exception\MyExceptionHandler.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\service\LoginService.java
 E:\GIt\ToolBox\src\main\java\com\toolbox\vo\DeleteResult.java

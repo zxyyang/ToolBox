@@ -22,6 +22,7 @@ import com.toolbox.valueobject.RequestBean;
 import com.toolbox.vo.DeleteResult;
 import com.toolbox.vo.down_ret;
 
+import cn.hutool.core.util.RandomUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
@@ -44,7 +45,7 @@ public class CloudFileUploadController {
 				return RequestBean.Error();
 			}
 		} catch (Exception e) {
-			return RequestBean.Error();
+			RequestBean.Error(e.toString());
 		}
 		return RequestBean.Success();
 	}
@@ -152,5 +153,38 @@ public class CloudFileUploadController {
 		String[] names = list.toArray(new String[list.size()]);
 
 		return RequestBean.Success(QiNiuUtil.listByPath(names));
+	}
+
+	@RequiresPermissions(value = { "add" })
+	@ApiOperation(value = "/noteAddImage", notes = "笔记图片", httpMethod = "POST")
+	@PostMapping("/noteAddImage")
+	public RequestBean<String> noteAddImage(@RequestParam("file") MultipartFile file) {
+		try {
+
+			String url = QiNiuUtil.uploadNoteImage(file, RandomUtil.randomString(8) + (file.getOriginalFilename()), false);
+			if (url != null) {
+				return RequestBean.Success(url);
+			} else {
+				return RequestBean.Error();
+			}
+		} catch (Exception e) {
+			return RequestBean.Error(e.toString());
+		}
+
+	}
+
+	@RequiresPermissions(value = { "delete" })
+	@ApiOperation(value = "/noteDeleteImage", notes = "日记图片删除", httpMethod = "POST")
+	@PostMapping("/noteDeleteImage")
+	public RequestBean<String> noteDeleteImage(String url) throws JsonProcessingException {
+		try {
+			String[] split = url.split("/");
+			String fileNanme = split[split.length - 1];
+			QiNiuUtil.deleteNoteImage(fileNanme);
+
+		} catch (Exception e) {
+			RequestBean.Error(e.toString());
+		}
+		return RequestBean.Success();
 	}
 }

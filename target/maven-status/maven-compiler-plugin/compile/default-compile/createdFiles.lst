@@ -3,6 +3,7 @@ com\toolbox\vo\UserVO.class
 com\toolbox\Exception\FileUploadExceptionAdvice.class
 com\toolbox\mapper\FileMapper.class
 com\toolbox\vo\PermissionsVO.class
+com\toolbox\config\RedisConfig.class
 com\toolbox\mapper\RoleMapper.class
 com\toolbox\Exception\MyExceptionHandler.class
 com\toolbox\domain\Role.class
@@ -33,6 +34,7 @@ com\toolbox\util\QiNiuUtil.class
 com\toolbox\service\Impl\FileStorageServiceImpl.class
 com\toolbox\valueobject\RequestBean.class
 com\toolbox\controller\NoteController.class
+com\toolbox\util\RedisUtil.class
 com\toolbox\controller\CloudFileUploadController.class
 com\toolbox\domain\User.class
 com\toolbox\service\FileStorageService.class

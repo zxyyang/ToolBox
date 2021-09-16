@@ -1,8 +1,13 @@
 package com.toolbox.config;
 
-import com.toolbox.service.FileStorageService;
+import javax.servlet.MultipartConfigElement;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.context.annotation.Bean;
+
+import com.toolbox.service.FileStorageService;
 
 /***
  * 为了在测试时获得干净的测试数据，同时也为了在应用启动后分配好上传文件存储地址，
@@ -12,12 +17,24 @@ import org.springframework.boot.CommandLineRunner;
  */
 public class FileUploadConfiguration implements CommandLineRunner {
 
-    @Autowired
-    FileStorageService fileStorageService;
+	@Autowired
+	FileStorageService fileStorageService;
 
-    @Override
-    public void run(String... args) throws Exception {
-        fileStorageService.clear();
-        fileStorageService.init();
-    }
+	@Override
+	public void run(String... args) throws Exception {
+		fileStorageService.clear();
+		fileStorageService.init();
+	}
+
+	@Bean
+
+	public MultipartConfigElement multipartConfigElement() {
+
+		MultipartConfigFactory factory = new MultipartConfigFactory();
+
+		factory.setLocation("/tmp/tomcat");
+
+		return factory.createMultipartConfig();
+
+	}
 }
