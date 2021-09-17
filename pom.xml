@@ -169,7 +169,24 @@
             <artifactId>hutool-core</artifactId>
             <version>5.3.8</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+        <!--        文件命名类-->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.3</version>
+        </dependency>
+        <dependency>
+
+            <groupId>commons-fileupload</groupId>
+
+            <artifactId>commons-fileupload</artifactId>
+
+            <version>1.3</version>
+
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>
