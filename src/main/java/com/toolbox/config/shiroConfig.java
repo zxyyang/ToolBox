@@ -40,7 +40,7 @@ public class shiroConfig {
 		// 过滤链定义，从上向下顺序执行，一般将 /**放在最为下边 一定要注意顺序,否则就不好使了
 		Map<String, String> map = new LinkedHashMap<>();
 		// 配置不登录可以访问的资源，anon 表示资源都可以匿名访问
-		// map.put("/**", "anon");
+		map.put("/**", "anon");
 		map.put("/login", "anon");
 		map.put("/", "anon");
 		map.put("/css/**", "anon");
@@ -51,7 +51,7 @@ public class shiroConfig {
 		map.put("/logout", "logout");
 		// 对所有用户认证
 		// 其他资源都需要认证 authc 表示需要认证才能进行访问 user表示配置记住我或认证通过可以访问的地址
-		map.put("/**", "authc");
+		// map.put("/**", "authc");
 		// 登录
 		shiroFilterFactoryBean.setLoginUrl("/login");
 		// 首页

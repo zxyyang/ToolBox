@@ -18,6 +18,7 @@ import com.qiniu.common.QiniuException;
 import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
+import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.BatchStatus;
 import com.qiniu.storage.model.DefaultPutRet;
@@ -172,7 +173,7 @@ public class QiNiuUtil {
 	}
 
 	/**
-	 * 上传MultipartFile
+	 * 分片上传MultipartFile
 	 *
 	 * @param file
 	 * @param key
@@ -181,24 +182,25 @@ public class QiNiuUtil {
 	 * @throws IOException
 	 */
 	public static boolean uploadMultipartFile(MultipartFile file, String key, boolean override) {
+		long startL = new Date().getTime();
+		System.out.println("开始时间：" + startL);
 		// 构造一个带指定Zone对象的配置类
-		Configuration cfg = new Configuration(QiNiuConfig.getInstance().getZone());
+		Configuration cfg = new Configuration(Region.autoRegion());
+		// 定义文件每个片大小
+		cfg.resumableUploadAPIV2BlockSize = 12;
+		// 定义并发数量
+		cfg.resumableUploadMaxConcurrentTaskCount = 1000;
+
 		// ...其他参数参考类注释
 		UploadManager uploadManager = new UploadManager(cfg);
 
 		// 把文件转化为字节数组
 		InputStream is = null;
 		ByteArrayOutputStream bos = null;
-
+		// 文件大小
+		long size = file.getSize();
 		try {
 			is = file.getInputStream();
-			bos = new ByteArrayOutputStream();
-			byte[] b = new byte[1024];
-			int len = -1;
-			while ((len = is.read(b)) != -1) {
-				bos.write(b, 0, len);
-			}
-			byte[] uploadBytes = bos.toByteArray();
 
 			Auth auth = getAuth();
 			String upToken;
@@ -210,11 +212,14 @@ public class QiNiuUtil {
 			// 默认上传接口回复对象
 			DefaultPutRet putRet;
 			// 进行上传操作，传入文件的字节数组，文件名，上传空间，得到回复对象
-			Response response = uploadManager.put(uploadBytes, key, upToken);
+			Response response = uploadManager.put(is, size, key, upToken, null, null, true);
 			putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
 			System.out.println(putRet.key);// key 文件名
 			System.out.println(putRet.hash);// hash 七牛返回的文件存储的地址，可以使用这个地址加七牛给你提供的前缀访问到这个视频。
 			System.out.println("上传成功");
+			long endL = new Date().getTime();
+			System.out.println("文件大小：" + size + "MB,上传时间：" + ((endL - startL) / 1000.00) + "秒");
+			System.out.println("速度：" + (size / 1024.00 / 1024.00) / ((endL - startL) / 1000.00) + "MB/S");
 			return true;
 		} catch (QiniuException e) {
 			e.printStackTrace();

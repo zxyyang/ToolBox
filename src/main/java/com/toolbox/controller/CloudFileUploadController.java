@@ -34,10 +34,11 @@ public class CloudFileUploadController {
 	@Autowired
 	FileService fileService;
 
-	@RequiresPermissions(value = { "add" })
+	// @RequiresPermissions(value = { "add" })
 	@ApiOperation(value = "/upload", notes = "上传文件", httpMethod = "POST")
 	@PostMapping("/upload")
 	public RequestBean<String> upload(@RequestParam("file") MultipartFile file, @RequestParam(defaultValue = "/") String path) {
+		System.out.println("上传开始：");
 		try {
 			if (QiNiuUtil.uploadMultipartFile(file, file.getOriginalFilename(), false)) {
 				fileService.add(file.getOriginalFilename(), path);
