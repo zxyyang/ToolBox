@@ -6,6 +6,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.qiniu.common.QiniuException;
 import com.toolbox.valueobject.RequestBean;
 
 import lombok.extern.slf4j.Slf4j;
@@ -60,5 +61,14 @@ public class MyExceptionHandler extends RuntimeException {
 	public RequestBean UnknownAccountException(UnknownAccountException e) {
 		log.error("账号密码错误:", e);
 		return RequestBean.Error("账号密码错误！:" + e.getMessage());
+	}
+
+	/**
+	 * 七牛
+	 */
+	@ExceptionHandler(QiniuException.class)
+	public RequestBean QiniuException(QiniuException e) {
+		log.error("七牛云错误:", e);
+		return RequestBean.Error("七牛云传输错误！:" + e.getMessage());
 	}
 }
