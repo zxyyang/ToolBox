@@ -26,7 +26,7 @@ public class Uploader {
 	/**
 	 * 最大文件大小
 	 */
-	private Integer maxFileSize = 524288000;
+	// private Integer maxFileSize = 999988000;
 	// private String fileParameterName;
 
 	public Uploader(String temporaryFolder, String fileParameterName) {
@@ -62,9 +62,10 @@ public class Uploader {
 			return "invalid_uploader_request1";
 		}
 
-		if (this.maxFileSize != null && totalSize > this.maxFileSize) {
-			return "invalid_uploader_request2";
-		}
+		// 文件最大限制
+		// if (this.maxFileSize != null && totalSize > this.maxFileSize) {
+		// return "invalid_uploader_request2";
+		// }
 
 		if (fileSize != null) {
 			if (chunkNumber < numberOfChunks && fileSize != chunkSize) {
@@ -118,7 +119,7 @@ public class Uploader {
 		}
 	}
 
-	public void post(HttpServletRequest req, UploadListener listener) throws IllegalStateException, IOException {
+	public void post(HttpServletRequest req, UploadListener listener) throws IllegalStateException, IOException, InterruptedException {
 
 		int chunkNumber = this.getParamInt(req, "chunkNumber", 0);
 		int chunkSize = this.getParamInt(req, "chunkSize", 0);
@@ -223,7 +224,7 @@ public class Uploader {
 	 * @return
 	 */
 	private int testChunkExists(int currentTestChunk, int chunkNumber, int numberOfChunks, String filename, String original_filename,
-			String identifier, UploadListener listener, String fileType) {
+			String identifier, UploadListener listener, String fileType) throws InterruptedException {
 		String cfile = getChunkFilename(currentTestChunk, identifier);
 		if (new File(cfile).exists()) {
 			currentTestChunk++;
@@ -245,33 +246,11 @@ public class Uploader {
 
 							@Override
 							public void onDone() {
-
-							}
-						};
-						this.write(identifier, new FileOutputStream(f), options);
-						// 文件合并完成后上传到七牛云服务器
-						try {
-							QiNiuUtil.uploadByPart(f, original_filename, false);
-						} catch (RuntimeException e) {
-							e.printStackTrace();
-							listener.callback("invalid_uploader_request", filename, original_filename, identifier, fileType);
-						}
-
-						options.listener = new UploadDoneListener() {
-
-							@Override
-							public void onDone() {
-
 								listener.callback("done", f.getAbsolutePath(), original_filename, identifier, fileType);
 								clean(identifier, null);
 							}
-
-							@Override
-							public void onError(Exception err) {
-								listener.callback("invalid_uploader_request", f.getAbsolutePath(), original_filename, identifier, fileType);
-								clean(identifier, null);
-							}
 						};
+						this.write(identifier, new FileOutputStream(f), options);
 					} catch (FileNotFoundException e) {
 						e.printStackTrace();
 						listener.callback("invalid_uploader_request", filename, original_filename, identifier, fileType);

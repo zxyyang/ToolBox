@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
@@ -244,8 +245,8 @@ public class QiNiuUtil {
 		long startL = new Date().getTime();
 		System.out.println("开始时间：" + startL);
 		// 构造一个带指定Zone对象的配置类
-
-		Configuration cfg = new Configuration(Region.autoRegion("up-z0"));
+		// Configuration cfg = new Configuration(QiNiuConfig.getInstance().getZone());
+		Configuration cfg = new Configuration(Zone.huadong());
 		// 定义文件每个片大小
 		cfg.resumableUploadAPIV2BlockSize = 1;
 		// 定义并发数量
