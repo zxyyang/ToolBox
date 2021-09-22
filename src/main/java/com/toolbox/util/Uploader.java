@@ -12,9 +12,10 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 //https://github.com/simple-uploader/Uploader/blob/develop/samples/Node.js/uploader-node.js
-
 /**
  * 断点续传
+ *
+ * @author zxyang
  */
 public class Uploader {
 
@@ -26,7 +27,7 @@ public class Uploader {
 	/**
 	 * 最大文件大小
 	 */
-	// private Integer maxFileSize = 999988000;
+	private Integer maxFileSize = 858993459;
 	// private String fileParameterName;
 
 	public Uploader(String temporaryFolder, String fileParameterName) {
@@ -48,7 +49,7 @@ public class Uploader {
 
 	public String getChunkFilename(int chunkNumber, String identifier) {
 		identifier = cleanIdentifier(identifier);
-		return new File(temporaryFolder, "jwj-" + identifier + '-' + chunkNumber).getAbsolutePath();
+		return new File(temporaryFolder, "zxyang-" + identifier + '-' + chunkNumber).getAbsolutePath();
 	}
 
 	public String validateRequest(int chunkNumber, int chunkSize, int totalSize, String identifier, String filename, Integer fileSize) {
@@ -61,8 +62,7 @@ public class Uploader {
 		if (chunkNumber > numberOfChunks) {
 			return "invalid_uploader_request1";
 		}
-
-		// 文件最大限制
+		// 文件过大
 		// if (this.maxFileSize != null && totalSize > this.maxFileSize) {
 		// return "invalid_uploader_request2";
 		// }
@@ -119,7 +119,7 @@ public class Uploader {
 		}
 	}
 
-	public void post(HttpServletRequest req, UploadListener listener) throws IllegalStateException, IOException, InterruptedException {
+	public void post(HttpServletRequest req, UploadListener listener) throws IllegalStateException, IOException {
 
 		int chunkNumber = this.getParamInt(req, "chunkNumber", 0);
 		int chunkSize = this.getParamInt(req, "chunkSize", 0);
@@ -204,8 +204,6 @@ public class Uploader {
 		pipeChunk(1, identifier, options, writableStream);
 	}
 
-	// 合并文件
-
 	/**
 	 * @param currentTestChunk
 	 * @param chunkNumber
@@ -224,7 +222,7 @@ public class Uploader {
 	 * @return
 	 */
 	private int testChunkExists(int currentTestChunk, int chunkNumber, int numberOfChunks, String filename, String original_filename,
-			String identifier, UploadListener listener, String fileType) throws InterruptedException {
+			String identifier, UploadListener listener, String fileType) {
 		String cfile = getChunkFilename(currentTestChunk, identifier);
 		if (new File(cfile).exists()) {
 			currentTestChunk++;

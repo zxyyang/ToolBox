@@ -4,9 +4,9 @@
     <option name="projectSpecificProfile">
       <ProjectSpecificProfile>
         <option name="formatter" value="ECLIPSE" />
-        <option name="importOrderConfigFilePath" value="$PROJECT_DIR$/../标准化/example.importorder" />
+        <option name="importOrderConfigFilePath" value="$PROJECT_DIR$/formatter/example.importorder" />
         <option name="importOrderFromFile" value="true" />
-        <option name="pathToConfigFileJava" value="$PROJECT_DIR$/../标准化/HirainCodeFormatter_Java_V2.0.xml" />
+        <option name="pathToConfigFileJava" value="$PROJECT_DIR$/formatter/HirainCodeFormatter_Java_V2.0.xml" />
         <option name="selectedJavaProfile" value="HirainCodeFormatter_Java" />
       </ProjectSpecificProfile>
     </option>
