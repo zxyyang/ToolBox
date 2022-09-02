@@ -34,7 +34,7 @@ public class CloudFileUploadController {
 	@Autowired
 	FileService fileService;
 
-	// @RequiresPermissions(value = { "add" })
+	 @RequiresPermissions(value = { "add" })
 	@ApiOperation(value = "/upload", notes = "上传文件", httpMethod = "POST")
 	@PostMapping("/upload")
 	public RequestBean<String> upload(@RequestParam("file") MultipartFile file, @RequestParam(defaultValue = "/") String path) {
