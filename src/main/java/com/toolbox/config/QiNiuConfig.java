@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import com.qiniu.common.Zone;
 
+import com.qiniu.storage.Region;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,9 +27,9 @@ public class QiNiuConfig {
 
 	private String imageBucket;
 
-	private Zone imageZone;
+	private Region imageZone;
 
-	private Zone zone;
+	private Region zone;
 
 	private String domainOfBucket;
 
@@ -48,30 +49,30 @@ public class QiNiuConfig {
 			imageDomainOfBucket = prop.getProperty("qiniu.image.domain-of-bucket");
 			expireInSeconds = Long.parseLong(prop.getProperty("qiniu.expire-in-seconds"));
 			String zoneName = prop.getProperty("qiniu.zone");
-			if (zoneName.equals("zone0")) {
-				zone = Zone.zone0();
-			} else if (zoneName.equals("zone1")) {
-				zone = Zone.zone1();
-			} else if (zoneName.equals("zone2")) {
-				zone = Zone.zone2();
-			} else if (zoneName.equals("zoneNa0")) {
-				zone = Zone.zoneNa0();
-			} else if (zoneName.equals("zoneAs0")) {
-				zone = Zone.zoneAs0();
+			if (zoneName.equals("huadong")) {
+				 zone = Region.huadong();
+			} else if (zoneName.equals("huabei")) {
+				zone = Region.huabei();
+			} else if (zoneName.equals("huanan")) {
+				zone = Region.huanan();
+			} else if (zoneName.equals("beimei")) {
+				zone = Region.beimei();
+			} else if (zoneName.equals("xinjiapo")) {
+				zone = Region.xinjiapo();
 			} else {
 				throw new Exception("Zone对象配置错误！");
 			}
 			String imageZoneName = prop.getProperty("qiniu.image.zone");
-			if (imageZoneName.equals("zone0")) {
-				zone = Zone.zone0();
-			} else if (imageZoneName.equals("zone1")) {
-				zone = Zone.zone1();
-			} else if (imageZoneName.equals("zone2")) {
-				zone = Zone.zone2();
-			} else if (imageZoneName.equals("zoneNa0")) {
-				zone = Zone.zoneNa0();
-			} else if (imageZoneName.equals("zoneAs0")) {
-				zone = Zone.zoneAs0();
+			if (imageZoneName.equals("huadong")) {
+				imageZone = Region.huadong();
+			} else if (imageZoneName.equals("huabei")) {
+				imageZone = Region.huabei();
+			} else if (imageZoneName.equals("huanan")) {
+				imageZone = Region.huanan();
+			} else if (imageZoneName.equals("beimei")) {
+				imageZone = Region.beimei();
+			} else if (imageZoneName.equals("xinjiapo")) {
+				imageZone = Region.xinjiapo();
 			} else {
 				throw new Exception("Zone对象配置错误！");
 			}

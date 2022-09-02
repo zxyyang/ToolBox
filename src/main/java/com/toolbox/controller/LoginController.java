@@ -23,7 +23,7 @@ public class LoginController {
 
 	@GetMapping("/login")
 	public RequestBean<String> login(UserVO user) {
-		user.setRememberMe(false);
+		user.setRememberMe(true);
 		// 用户认证信息
 		Subject subject = SecurityUtils.getSubject();
 		// 如果有点击 记住我

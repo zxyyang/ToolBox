@@ -22,6 +22,7 @@ import org.crazycake.shiro.RedisCacheManager;
 import org.crazycake.shiro.RedisManager;
 import org.crazycake.shiro.RedisSessionDAO;
 import org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,14 @@ import com.toolbox.util.ShiroSessionListener;
 
 @Configuration
 public class shiroConfig {
+
+	@Value("${spring.redis.host}")
+	private String redisHost;
+	@Value("${spring.redis.port}")
+	private Integer redisPort;
+
+	@Value("${spring.redis.database}")
+	private Integer redisDb;
 
 	// Filter工厂，设置对应的过滤条件和跳转条件
 	@Bean
@@ -101,7 +110,7 @@ public class shiroConfig {
 	 * @return
 	 */
 	@Bean(name = "lifecycleBeanPostProcessor")
-	public LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
+	public static LifecycleBeanPostProcessor lifecycleBeanPostProcessor() {
 		return new LifecycleBeanPostProcessor();
 	}
 
@@ -188,9 +197,9 @@ public class shiroConfig {
 	@Bean
 	public RedisManager redisManager() {
 		RedisManager redisManager = new RedisManager();
-		redisManager.setHost("47.117.143.194");
-		redisManager.setPort(6379);
-		redisManager.setDatabase(1);
+		redisManager.setHost(redisHost);
+		redisManager.setPort(redisPort);
+		redisManager.setDatabase(redisDb);
 		return redisManager;
 	}
 

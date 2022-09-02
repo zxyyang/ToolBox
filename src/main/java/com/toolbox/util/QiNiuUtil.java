@@ -478,7 +478,6 @@ public class QiNiuUtil {
 					if (name[i].endsWith("/")) {
 						files.setName(name[i]);
 					} else {
-
 						files.setName(name[i] + "(文件云端获取失败)");
 					}
 				}
