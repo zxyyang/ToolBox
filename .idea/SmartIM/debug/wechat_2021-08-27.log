@@ -1,6 +1,0 @@
-2021-08-27 10:44:20.192 [Thread-18] INFO  io.github.biezhi.wechat.api.WechatClient - [*] 正在获取 uuid ... 
-2021-08-27 10:44:20.199 [Thread-18] DEBUG io.github.biezhi.wechat.api.WechatApi - [*] 请求 => Request{method=GET, url=https://login.weixin.qq.com/jslogin?appid=wx782c26e4c19acffb&lang=zh_CN&fun=new&_=1630032260195, tag=null}
-
-2021-08-27 10:44:54.952 [Thread-22] INFO  io.github.biezhi.wechat.api.WechatClient - [*] 正在获取 uuid ... 
-2021-08-27 10:44:54.954 [Thread-22] DEBUG io.github.biezhi.wechat.api.WechatApi - [*] 请求 => Request{method=GET, url=https://login.weixin.qq.com/jslogin?appid=wx782c26e4c19acffb&lang=zh_CN&fun=new&_=1630032294954, tag=null}
-
