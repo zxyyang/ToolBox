@@ -6,6 +6,7 @@ import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @Api(value = "/wx", tags = { "企业微信推送" }, description = "企业微信推送")
+@RequestMapping("/wx")
 public class WxCorpController {
 
     @Autowired
@@ -29,7 +31,7 @@ public class WxCorpController {
      * @return
      */
     @Scheduled(cron = "0 30 7 * * ?")
-    @RequestMapping("/sendMorning")
+    @GetMapping("/sendMorning")
     public RequestBean<String> sendMorning() {
         log.info("早晨推送启动！");
         try {
@@ -47,7 +49,7 @@ public class WxCorpController {
      * @return
      */
     @Scheduled(cron = "0 0 21 * * ?")
-    @RequestMapping("/sendNight")
+    @GetMapping("/sendNight")
     public RequestBean<String> sendNight() {
         log.info("晚上推送启动！");
         try {
