@@ -47,7 +47,7 @@ public class WxSendServiceImpl implements WxSendService {
         return access_token;
     }
     @Override
-    public String sendCorpWxMsg() {
+    public String sendCorpWxMorningMsg() {
         String corpToken = getCorpToken();
         Map<String, Object> map = new HashMap<>(5);
         map.put("touser", "@all");

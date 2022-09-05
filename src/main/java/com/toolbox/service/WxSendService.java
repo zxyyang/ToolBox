@@ -7,7 +7,7 @@ package com.toolbox.service;
  * @since: 2022/9/5 14:59
  */
 public interface WxSendService {
-    String sendCorpWxMsg();
+    String sendCorpWxMorningMsg();
 
     String sendCorpWxNoteMsg(String content , String time);
 
