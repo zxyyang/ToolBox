@@ -41,6 +41,9 @@ public class shiroConfig {
 	@Value("${spring.redis.database}")
 	private Integer redisDb;
 
+	@Value("${spring.redis.password}")
+	private String redisPassword;
+
 	// Filter工厂，设置对应的过滤条件和跳转条件
 	@Bean
 	public ShiroFilterFactoryBean shiroFilterFactoryBean(SecurityManager securityManager) {
@@ -199,6 +202,7 @@ public class shiroConfig {
 		RedisManager redisManager = new RedisManager();
 		redisManager.setHost(redisHost);
 		redisManager.setPort(redisPort);
+		redisManager.setPassword(redisPassword);
 		redisManager.setDatabase(redisDb);
 		return redisManager;
 	}
