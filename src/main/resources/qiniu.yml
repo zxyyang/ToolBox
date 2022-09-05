@@ -1,0 +1,11 @@
+qiniu:
+    access-key:
+    bucket:
+    domain-of-bucket:
+    expire-in-seconds: -1
+    image:
+        bucket:
+        domain-of-bucket:
+        zone:
+    secret-key:
+    zone:

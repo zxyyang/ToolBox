@@ -1,0 +1,57 @@
+mconfig:
+    swagger-ui-open: ture
+mybatis:
+    configuration:
+        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+        map-underscore-to-camel-case: true
+    type-aliases-package: com.neo.entity
+server:
+    max-http-header-size: 204800MB
+    maxHttpHeaderSize: 102400
+    maxPostSize: -1
+    port: 8888
+    servlet:
+        context-path: /api
+    tomcat:
+        basedir: /tomcatCache
+        max-http-form-post-size: 2048MB
+        max-swallow-size: 204800MB
+spring:
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/toolbox?serverTimezone=GMT%2B8&useSSL=true
+        username: root
+        password: root
+    redis:
+        database: 1
+        host: localhost
+        port: 6379
+        password:
+    servlet:
+        multipart:
+            enabled: true
+            location: /data/upload_tmp
+            max-file-size: 2048MB
+            max-request-size: 2048MB
+    thymeleaf:
+        cache: false
+
+wx-corp:
+    corpId: ""
+    agentId: ""
+    secret: "-KPtUj8aDRZwfSAnKjs"
+
+message:
+    config:
+        birthday1: "03-11"
+        birthday2: "12-30"
+        togetherDate: "2021-12-25"
+# https://tianqiapi.com/user/login
+weather:
+    config:
+        appid: ""
+        appSecret: ""
+        city: "上海"
+# https://www.apispace.com/eolink/api/myjj/introduction
+ApiSpace:
+    token: ""
