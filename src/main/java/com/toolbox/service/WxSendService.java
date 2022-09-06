@@ -12,4 +12,5 @@ public interface WxSendService {
     String sendCorpWxNoteMsg(String content , String time);
 
     String sendCorpWxNightMsg();
+
 }

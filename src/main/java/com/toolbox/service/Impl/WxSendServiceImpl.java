@@ -1,6 +1,8 @@
 package com.toolbox.service.Impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.cron.CronUtil;
+import cn.hutool.cron.task.Task;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -232,6 +234,30 @@ public class WxSendServiceImpl implements WxSendService {
         String data = HttpUtil.sendPost(url,JSONObject.toJSONString(map));
         return data;
     }
+
+/*    @Override
+    public String send() {
+
+        // 定义一个任务
+        CronUtil.schedule("0 30 7 * * ?", new Task() {
+            @Override
+            public void execute() {
+                sendCorpWxMorningMsg();
+            }
+        });
+        // 计时器
+
+        // 开始执行任务 (延迟1000毫秒执行，每3000毫秒执行一次)
+        CronUtil.setMatchSecond(true);
+        Scheduler scheduler = CronUtil.getScheduler();
+        boolean started = scheduler.isStarted();
+        if (started){
+        }else {
+            System.err.println("启动");
+            CronUtil.start();
+        }
+        return null;
+    }*/
 
     private String getBirthday(String configConstant, String date) {
         String birthDay = "无法识别";

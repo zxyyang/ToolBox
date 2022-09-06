@@ -60,4 +60,5 @@ public class WxCorpController {
             return RequestBean.Error(e.getMessage());
         }
     }
+
 }
