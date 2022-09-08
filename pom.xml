@@ -183,11 +183,6 @@
             <version>2.3</version>
         </dependency>
         <dependency>
-            <groupId>com.humancloud.utils</groupId>
-            <artifactId>humancloud-utils</artifactId>
-            <version>2.0.2</version>
-        </dependency>
-        <dependency>
 
             <groupId>commons-fileupload</groupId>
 
