@@ -9,7 +9,7 @@ package com.toolbox.service;
 public interface WxSendService {
     String sendCorpWxMorningMsg();
 
-    String sendCorpWxNoteMsg(String content , String time);
+    String sendCorpWxNoteMsg(String content );
 
     String sendCorpWxNightMsg();
 

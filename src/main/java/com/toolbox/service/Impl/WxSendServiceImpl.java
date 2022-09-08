@@ -141,7 +141,45 @@ public class WxSendServiceImpl implements WxSendService {
     }
 
     @Override
-    public String sendCorpWxNoteMsg(String content, String time) {
+    public String sendCorpWxNoteMsg(String content) {
+        String corpToken = getCorpToken();
+        Map<String, Object> map = new HashMap<>(5);
+        map.put("touser", "@all");
+        map.put("msgtype", "template_card");
+        map.put("agentid", configConstant.getAgentId());
+        map.put("task_id",DateUtil.parse(DateUtil.now(),"yyyyMMddHHmmss"));
+        Map<String, Object> templateMap = new HashMap<>();
+        templateMap.put("card_type","button_interaction");
+        Map<String, Object> main_title = new HashMap<>();
+        main_title.put("title" ,"备忘录提醒来喽！");
+        main_title.put("desc",content);
+        templateMap.put("main_title",main_title);
+        List<Object> button_list = new ArrayList<>();
+        Map<String, Object> ok = new HashMap<>();
+        ok.put("text","确定");
+        ok.put("style",1);
+        ok.put("type",0);
+        ok.put("key","button_key_1");
+        ok.put("url","baidu.com");
+
+        Map<String, Object> next = new HashMap<>();
+        next.put("text","再续10分钟");
+        next.put("style",1);
+        next.put("type",0);
+        next.put("key","button_key_2");
+        next.put("url","baidu.com");
+        button_list.add(ok);
+        button_list.add(next);
+        templateMap.put("button_list",button_list);
+
+
+        map.put("template_card",templateMap);
+        map.put("enable_id_trans",0);
+        map.put("enable_duplicate_check",0);
+        map.put("duplicate_check_interval",1800);
+        String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send" + "?access_token=" + corpToken+"&debug=1";
+        String data = HttpUtil.sendPost(url,JSONObject.toJSONString(map));
+        System.err.println(data);
         return null;
     }
 

@@ -20,6 +20,6 @@ class WxSendServiceImplTest {
 
     @Test
     void testSend(){
-        String s = wxSendService.sendCorpWxNightMsg();
+        String s = wxSendService.sendCorpWxNoteMsg("测试");
     }
 }
