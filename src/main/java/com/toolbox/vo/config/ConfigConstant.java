@@ -2,7 +2,6 @@ package com.toolbox.vo.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 /**
@@ -12,15 +11,18 @@ import org.springframework.stereotype.Component;
  * @since: 2022/9/5 14:42
  */
 @Component
-@ConfigurationProperties(prefix = "wx.config")
 @Data
 public class ConfigConstant {
     @Value("${wx-corp.corpId}")
     private String corpId;
-    @Value("${wx-corp.agentId}")
-    private String agentId;
-    @Value("${wx-corp.secret}")
-    private String secret;
+    @Value("${wx-corp.weatherId}")
+    private String weatherId;
+    @Value("${wx-corp.remindId}")
+    private String remindId;
+    @Value("${wx-corp.weatherSecret}")
+    private String weatherSecret;
+    @Value("${wx-corp.remindSecret}")
+    private String remindSecret;
 
     @Value("${weather.config.appid}")
     public String weatherAppId;

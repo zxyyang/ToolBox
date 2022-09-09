@@ -1,10 +1,6 @@
 package com.toolbox.service.Impl;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.cron.CronUtil;
-import cn.hutool.cron.task.Task;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.toolbox.service.ProverbService;
 import com.toolbox.service.TianQiService;
@@ -41,8 +37,8 @@ public class WxSendServiceImpl implements WxSendService {
     @Autowired
     private ProverbService proverbService;
 
-    private String getCorpToken(){
-        String param  = "corpid="+configConstant.getCorpId()+"&corpsecret="+configConstant.getSecret();
+    private String getCorpToken(String secret){
+        String param  = "corpid="+configConstant.getCorpId()+"&corpsecret="+secret;
         String token = HttpUtil.sendGet(" https://qyapi.weixin.qq.com/cgi-bin/gettoken", param);
         JSONObject object = JSONObject.parseObject(token);
         String access_token = object.getString("access_token");
@@ -50,12 +46,12 @@ public class WxSendServiceImpl implements WxSendService {
     }
     @Override
     public String sendCorpWxMorningMsg() {
-        String corpToken = getCorpToken();
+        String corpToken = getCorpToken(configConstant.getWeatherSecret());
         Map<String, Object> map = new HashMap<>(5);
         map.put("touser", "@all");
         map.put("totag", "早上好！");
         map.put("msgtype", "news");
-        map.put("agentid", configConstant.getAgentId());
+        map.put("agentid", configConstant.getWeatherId());
         StringBuilder content = new StringBuilder();
         //天气
         JSONObject weatherResult = tianQiService.getWeatherByCity();
@@ -141,33 +137,35 @@ public class WxSendServiceImpl implements WxSendService {
     }
 
     @Override
-    public String sendCorpWxNoteMsg(String content) {
-        String corpToken = getCorpToken();
+    public String sendCorpWxNoteMsg(String notes) {
+       /* String corpToken = getCorpToken();
+        System.err.println(corpToken);
         Map<String, Object> map = new HashMap<>(5);
         map.put("touser", "@all");
         map.put("msgtype", "template_card");
         map.put("agentid", configConstant.getAgentId());
-        map.put("task_id",DateUtil.parse(DateUtil.now(),"yyyyMMddHHmmss"));
         Map<String, Object> templateMap = new HashMap<>();
         templateMap.put("card_type","button_interaction");
+        templateMap.put("task_id",DateUtil.parse(DateUtil.now(),"yyyyMMddHHmmss"));
         Map<String, Object> main_title = new HashMap<>();
         main_title.put("title" ,"备忘录提醒来喽！");
         main_title.put("desc",content);
         templateMap.put("main_title",main_title);
+        templateMap.put("sub_title_text","sub_title_text");
         List<Object> button_list = new ArrayList<>();
         Map<String, Object> ok = new HashMap<>();
         ok.put("text","确定");
         ok.put("style",1);
-        ok.put("type",0);
-        ok.put("key","button_key_1");
-        ok.put("url","baidu.com");
+        ok.put("type",1);
+        ok.put("key","reject");
+        ok.put("url","http://zxyang.cn");
 
         Map<String, Object> next = new HashMap<>();
         next.put("text","再续10分钟");
-        next.put("style",1);
-        next.put("type",0);
-        next.put("key","button_key_2");
-        next.put("url","baidu.com");
+        next.put("style",3);
+        next.put("key","approve");
+        next.put("type",1);
+        next.put("url","http://zxyang.cn");
         button_list.add(ok);
         button_list.add(next);
         templateMap.put("button_list",button_list);
@@ -180,17 +178,43 @@ public class WxSendServiceImpl implements WxSendService {
         String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send" + "?access_token=" + corpToken+"&debug=1";
         String data = HttpUtil.sendPost(url,JSONObject.toJSONString(map));
         System.err.println(data);
-        return null;
-    }
-
-    @Override
-    public String sendCorpWxNightMsg() {
-        String corpToken = getCorpToken();
+        return null;*/
+        String corpToken = getCorpToken(configConstant.getRemindSecret());
         Map<String, Object> map = new HashMap<>(5);
         map.put("touser", "@all");
         map.put("totag", "早上好！");
         map.put("msgtype", "news");
-        map.put("agentid", configConstant.getAgentId());
+        map.put("agentid", configConstant.getRemindId());
+        StringBuilder content = new StringBuilder();
+        //时间
+        content.append(notes);
+        Map<String, Object> contentMap = new HashMap<>();
+        List<Object> articles = new ArrayList<>();
+        Map<String, Object> articleMap = new HashMap<>();
+        articleMap.put("title","备忘录");
+        articleMap.put("description",content.toString());
+        articleMap.put("url","URL");
+        articleMap.put("picurl","https://inews.gtimg.com/newsapp_bt/0/13270307329/641");
+        articles.add(articleMap);
+        contentMap.put("articles",articles);
+        map.put("news",contentMap);
+        map.put("enable_id_trans",0);
+        map.put("enable_duplicate_check",0);
+        map.put("duplicate_check_interval",1800);
+        String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send" + "?access_token=" + corpToken+"&debug=1";
+        String data = HttpUtil.sendPost(url,JSONObject.toJSONString(map));
+        System.err.println(data);
+        return data;
+    }
+
+    @Override
+    public String sendCorpWxNightMsg() {
+        String corpToken = getCorpToken(configConstant.getWeatherSecret());
+        Map<String, Object> map = new HashMap<>(5);
+        map.put("touser", "@all");
+        map.put("totag", "早上好！");
+        map.put("msgtype", "news");
+        map.put("agentid", configConstant.getWeatherId());
         StringBuilder content = new StringBuilder();
         //天气
         JSONObject nextWeatherByCity = tianQiService.getNextWeatherByCity();

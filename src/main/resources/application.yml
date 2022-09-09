@@ -1,5 +1,5 @@
 ApiSpace:
-    token: 27e6b60faeb147f98eb6870520c760c8
+    token:
 mconfig:
     swagger-ui-open: ture
 message:
@@ -26,13 +26,13 @@ server:
 spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        password:
+        password: root
         url: jdbc:mysql://127.0.0.1:3306/toolbox?serverTimezone=GMT%2B8&useSSL=true
         username: root
     redis:
-        database: 1
-        host: 127.0.0.1
-        port: 16379
+        database:
+        host:
+        port:
         password:
     servlet:
         multipart:
@@ -48,6 +48,8 @@ weather:
         appid:
         city: 上海
 wx-corp:
-    agentId:
+    weatherId:
+    remindId:
     corpId:
-    secret:
+    weatherSecret:
+    remindSecret:
