@@ -1,9 +1,7 @@
 package com.toolbox.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sun.deploy.net.HttpUtils;
 import com.toolbox.service.WxSendService;
-import com.toolbox.util.HttpUtil;
 import com.toolbox.util.wechat.AesException;
 import com.toolbox.util.wechat.WXBizJsonMsgCrypt;
 import com.toolbox.valueobject.RequestBean;
@@ -13,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -88,8 +85,8 @@ public class WxCorpController {
     public void reveiceMsg(@RequestParam(name = "msg_signature") final String msgSignature,
                            @RequestParam(name = "timestamp") final String timestamp,
                            @RequestParam(name = "nonce") final String nonce,
-                           @RequestParam(name = "echostr") final String echostr,
-                           final HttpServletResponse response) throws Exception {
+                           @RequestParam(name = "echostr") final String echostr
+                           ,HttpServletRequest request,final HttpServletResponse response) throws Exception {
         //TODO:修改
         String sToken = configConstant.getHdToken();
         String sCorpID = configConstant.getCorpId();
