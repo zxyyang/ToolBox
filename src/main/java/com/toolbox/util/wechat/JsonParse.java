@@ -13,7 +13,7 @@ package com.toolbox.util.wechat;
  * 要编译打包架包json
  * 官方源码下载地址 : https://github.com/stleary/JSON-java, jar包下载地址 : https://mvnrepository.com/artifact/org.json/json
  */
-import org.json.JSONObject;
+import com.alibaba.fastjson.JSONObject;
 
 
 /**
@@ -33,7 +33,7 @@ class JsonParse {
 		Object[] result = new Object[3];
 		try {
 
-			JSONObject json = new JSONObject(jsontext);    
+			JSONObject json = JSONObject.parseObject(jsontext);
         	String encrypt_msg = json.getString("encrypt");
 			String tousername  = json.getString("tousername");
 			String agentid     = json.getString("agentid");

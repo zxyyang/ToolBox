@@ -25,19 +25,25 @@ public class ConfigConstant {
     private String remindSecret;
 
     @Value("${weather.config.appid}")
-    public String weatherAppId;
+    private String weatherAppId;
 
     @Value("${weather.config.appSecret}")
-    public String weatherAppSecret;
+    private String weatherAppSecret;
     @Value("${weather.config.city}")
-    public String city;
+    private String city;
     @Value("${message.config.togetherDate}")
-    public String togetherDate;
+    private String togetherDate;
     @Value("${message.config.birthday1}")
-    public  String birthday1;
+    private  String birthday1;
     @Value("${message.config.birthday2}")
-    public  String birthday2;
+    private  String birthday2;
 
     @Value("${ApiSpace.token}")
-    public String token;
+    private String token;
+
+    @Value("${wx-corp.token}")
+    private String HdToken;
+
+    @Value("${wx-corp.EncodingAESKey}")
+    private String encodingAESKey;
 }

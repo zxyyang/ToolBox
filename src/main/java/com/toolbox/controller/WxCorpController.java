@@ -7,6 +7,7 @@ import com.toolbox.util.HttpUtil;
 import com.toolbox.util.wechat.AesException;
 import com.toolbox.util.wechat.WXBizJsonMsgCrypt;
 import com.toolbox.valueobject.RequestBean;
+import com.toolbox.vo.config.ConfigConstant;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -36,6 +37,8 @@ public class WxCorpController {
     @Autowired
     private WxSendService wxSendService;
 
+    @Autowired
+    ConfigConstant configConstant;
     /**
      * 获取Token
      * 每天早上7：30执行推送
@@ -88,21 +91,21 @@ public class WxCorpController {
                            @RequestParam(name = "echostr") final String echostr,
                            final HttpServletResponse response) throws Exception {
         //TODO:修改
-        String sToken = "QDG6eK";
-        String sCorpID = "wx5823bf96d3bd56c7";
-        String sEncodingAESKey = "jWmYm7qr5nMoAUwZRjGtBxmz3KA1tkAj3ykkR6q2B2C";
+        String sToken = configConstant.getHdToken();
+        String sCorpID = configConstant.getCorpId();
+        String sEncodingAESKey = configConstant.getEncodingAESKey();
 
         WXBizJsonMsgCrypt wxcpt = new WXBizJsonMsgCrypt(sToken, sEncodingAESKey, sCorpID);
         String sEchoStr; //需要返回的明文
         try {
             sEchoStr = wxcpt.VerifyURL(msgSignature, timestamp, nonce, echostr);
-            System.out.println("-----验证url的echostr: " + sEchoStr);
+            log.info("-----验证url的echostr: " + sEchoStr);
             // 验证URL成功，将sEchoStr返回
             PrintWriter writer = response.getWriter();
             writer.write(sEchoStr);
             writer.flush();
         } catch (Exception e) {
-            System.out.println("-----验证url失败: ");
+            log.error("-----验证url失败: ");
             //验证URL失败，错误原因请查看异常
             e.printStackTrace();
         }
@@ -121,21 +124,21 @@ public class WxCorpController {
                                 @RequestParam(name = "msg_signature") final String msgSignature,
                                 @RequestParam(name = "timestamp") final String timestamp,
                                 @RequestParam(name = "nonce") final String nonce) throws IOException, AesException {
-        String sToken = "QDG6eK";
-        String sCorpID = "wx5823bf96d3bd56c7";
-        String sEncodingAESKey = "jWmYm7qr5nMoAUwZRjGtBxmz3KA1tkAj3ykkR6q2B2C";
+        String sToken = configConstant.getHdToken();
+        String sCorpID = configConstant.getCorpId();
+        String sEncodingAESKey = configConstant.getEncodingAESKey();
 
         WXBizJsonMsgCrypt wxcpt = new WXBizJsonMsgCrypt(sToken, sEncodingAESKey, sCorpID);
         //获取数据
         InputStream inputStream = request.getInputStream();
         String sPostData = IOUtils.toString(inputStream, "UTF-8");
         String sMsg = wxcpt.DecryptMsg(msgSignature, timestamp, nonce, sPostData);
-        System.out.println("解析后的消息: " + sMsg);
+        log.info("解析后的消息: " + sMsg);
         JSONObject json = JSONObject.parseObject(sMsg);
         String Content = json.getString("Content");
         //内容就行业务处理
         //TODO 业务处理
-        System.out.println("Content：" + Content);
+        log.error("Content：" + Content);
 
         return null;
 
