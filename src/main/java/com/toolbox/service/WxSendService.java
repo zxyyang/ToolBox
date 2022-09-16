@@ -22,5 +22,5 @@ public interface WxSendService {
 
     PageInfo<RemindVo> getRemindList(Integer pageNumber, Integer pageSize);
 
-    void deleteRemind(String id);
+    void deleteRemind(List<String> ids);
 }

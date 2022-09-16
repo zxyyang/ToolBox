@@ -305,8 +305,11 @@ public class WxSendServiceImpl implements WxSendService {
     }
 
     @Override
-    public void deleteRemind(String id) {
-        QuartzUtil.removeJob(scheduler,id);
+    public void deleteRemind(List<String> ids) {
+        ids.forEach(id->{
+            QuartzUtil.removeJob(scheduler,id);
+        });
+
     }
 
 /*    @Override

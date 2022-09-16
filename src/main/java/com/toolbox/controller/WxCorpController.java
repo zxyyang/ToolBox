@@ -169,9 +169,9 @@ public class WxCorpController {
     }
 
     @GetMapping("/deleteRemind")
-    public  RequestBean<String> deleteRemind(String id){
+    public  RequestBean<String> deleteRemind(@RequestParam List<String> ids){
         try {
-            wxSendService.deleteRemind(id);
+            wxSendService.deleteRemind(ids);
             return  RequestBean.Success();
         }
         catch (Exception e){
