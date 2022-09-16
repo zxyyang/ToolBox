@@ -143,8 +143,8 @@ public class WxCorpController {
 
     }
 
-    @GetMapping("/getRemind")
-    public RequestBean<List<RemindVo>> getRemind() {
+    @GetMapping("/listRemind")
+    public RequestBean<List<RemindVo>> listRemind() {
         try {
             List<RemindVo> remindList = wxSendService.getRemindList();
             return  RequestBean.Success(remindList);
