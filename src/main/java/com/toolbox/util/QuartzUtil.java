@@ -10,14 +10,16 @@ import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
 
-import org.quartz.CronTrigger;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
-import org.quartz.Trigger;
-import org.quartz.TriggerKey;
+import com.alibaba.fastjson.JSONObject;
+import com.toolbox.vo.quartz.QuartzJobsVO;
+import com.toolbox.vo.wx.RemindVo;
+import org.quartz.*;
+import org.quartz.impl.JobExecutionContextImpl;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.stereotype.Component;
+
+import java.text.ParseException;
+import java.util.*;
 
 
 /**
@@ -26,26 +28,17 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class QuartzUtil {
-    private static String JOB_GROUP_NAME = "JOB_GROUP_SYSTEM";
-    private static String TRIGGER_GROUP_NAME = "TRIGGER_GROUP_SYSTEM";
-
+    private static String JOB_GROUP_NAME = "默认任务分组";
+    private static String TRIGGER_GROUP_NAME = "默认触发器分组";
 
 
     /**
+     * @param sched   调度器
+     * @param jobName 任务名
+     * @param cls     任务
+     * @param params  任务参数
+     * @param time    时间设置，参考quartz说明文档
      * @Description: 添加一个定时任务，使用默认的任务组名，触发器名，触发器组名
-     *
-     * @param sched
-     *            调度器
-     *
-     * @param jobName
-     *            任务名
-     * @param cls
-     *            任务
-     * @param params
-     *            任务参数
-     * @param time
-     *            时间设置，参考quartz说明文档
-     *
      * @Title: QuartzManager.java
      */
     public static void addJob(Scheduler sched, String jobName, @SuppressWarnings("rawtypes") Class cls, Object params,
@@ -70,33 +63,20 @@ public class QuartzUtil {
     }
 
 
-
-
     /**
+     * @param sched            调度器
+     * @param jobName          任务名
+     * @param jobGroupName     任务组名
+     * @param triggerName      触发器名
+     * @param triggerGroupName 触发器组名
+     * @param jobClass         任务
+     * @param params           任务参数
+     * @param time             时间设置，参考quartz说明文档
      * @Description: 添加一个定时任务
-     *
-     * @param sched
-     *            调度器
-     *
-     * @param jobName
-     *            任务名
-     * @param jobGroupName
-     *            任务组名
-     * @param triggerName
-     *            触发器名
-     * @param triggerGroupName
-     *            触发器组名
-     * @param jobClass
-     *            任务
-     * @param params
-     *            任务参数
-     * @param time
-     *            时间设置，参考quartz说明文档
-     *
      * @Title: QuartzManager.java
      */
     public static void addJob(Scheduler sched, String jobName, String jobGroupName, String triggerName,
-                              String triggerGroupName, @SuppressWarnings("rawtypes") Class jobClass,  Object params, String time) {
+                              String triggerGroupName, @SuppressWarnings("rawtypes") Class jobClass, Object params, String time) {
         try {
             JobKey jobKey = new JobKey(jobName, jobGroupName);
             JobDataMap jobDataMap = new JobDataMap();
@@ -113,15 +93,11 @@ public class QuartzUtil {
     }
 
 
-
     /**
-     * @Description: 修改一个任务的触发时间(使用默认的任务组名，触发器名，触发器组名)
-     *
-     * @param sched
-     *            调度器
+     * @param sched   调度器
      * @param jobName
      * @param time
-     *
+     * @Description: 修改一个任务的触发时间(使用默认的任务组名 ， 触发器名 ， 触发器组名)
      * @Title: QuartzManager.java
      */
     @SuppressWarnings("rawtypes")
@@ -140,7 +116,7 @@ public class QuartzUtil {
                 Object params = jobDetail.getJobDataMap().get("params");
                 removeJob(sched, jobName);
                 System.out.println("修改任务：" + jobName);
-                addJob(sched, jobName, objJobClass, params,time);
+                addJob(sched, jobName, objJobClass, params, time);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -148,18 +124,13 @@ public class QuartzUtil {
     }
 
 
-
     /**
-     * @Description: 修改一个任务的触发时间
-     *
-     * @param sched
-     *            调度器 *
-     * @param sched
-     *            调度器
+     * @param sched            调度器 *
+     * @param sched            调度器
      * @param triggerName
      * @param triggerGroupName
      * @param time
-     *
+     * @Description: 修改一个任务的触发时间
      * @Title: QuartzManager.java
      */
     public static void modifyJobTime(Scheduler sched, String triggerName, String triggerGroupName, String time) {
@@ -182,14 +153,10 @@ public class QuartzUtil {
     }
 
 
-
     /**
-     * @Description: 移除一个任务(使用默认的任务组名，触发器名，触发器组名)
-     *
-     * @param sched
-     *            调度器
+     * @param sched   调度器
      * @param jobName
-     *
+     * @Description: 移除一个任务(使用默认的任务组名 ， 触发器名 ， 触发器组名)
      * @Title: QuartzManager.java
      */
     public static void removeJob(Scheduler sched, String jobName) {
@@ -205,17 +172,13 @@ public class QuartzUtil {
     }
 
 
-
     /**
-     * @Description: 移除一个任务
-     *
-     * @param sched
-     *            调度器
+     * @param sched            调度器
      * @param jobName
      * @param jobGroupName
      * @param triggerName
      * @param triggerGroupName
-     *
+     * @Description: 移除一个任务
      * @Title: QuartzManager.java
      */
     public static void removeJob(Scheduler sched, String jobName, String jobGroupName, String triggerName,
@@ -232,12 +195,9 @@ public class QuartzUtil {
     }
 
 
-
     /**
+     * @param sched 调度器
      * @Description:启动所有定时任务
-     *
-     * @param sched  调度器
-     *
      * @Title: QuartzManager.java
      */
     public static void startJobs(Scheduler sched) {
@@ -249,13 +209,9 @@ public class QuartzUtil {
     }
 
 
-
     /**
+     * @param sched 调度器
      * @Description:关闭所有定时任务
-     *
-     * @param sched
-     *            调度器
-     *
      */
     public static void shutdownJobs(Scheduler sched) {
         try {
@@ -266,4 +222,44 @@ public class QuartzUtil {
             throw new RuntimeException(e);
         }
     }
+
+    public static List<QuartzJobsVO> getAllJobs(Scheduler scheduler){
+        GroupMatcher<JobKey> matcher = GroupMatcher.anyJobGroup();
+        Set<JobKey> jobKeys = null;
+        List<QuartzJobsVO> jobList = new ArrayList();
+        try {
+            jobKeys = scheduler.getJobKeys(matcher);
+            for (JobKey jobKey : jobKeys) {
+                List<? extends Trigger> triggers = scheduler.getTriggersOfJob(jobKey);
+                for (Trigger trigger : triggers) {
+                    Object params = scheduler.getJobDetail(jobKey).getJobDataMap().get("params");
+                    QuartzJobsVO job = new QuartzJobsVO();
+                    job.setParams(params);
+                    job.setJobDetailName(jobKey.getName());
+                    job.setGroupName(jobKey.getGroup());
+                    job.setJobCronExpression("触发器:" + trigger.getKey());
+                    Trigger.TriggerState triggerState = scheduler.getTriggerState(trigger.getKey());
+                    job.setStatus(triggerState.name());
+                    if (trigger instanceof CronTrigger) {
+                        CronTrigger cronTrigger = (CronTrigger) trigger;
+                        String cronExpression = cronTrigger.getCronExpression();
+                        job.setJobCronExpression(cronExpression);
+                        job.setTime(DateToCron.parseDate(DateToCron.nextTime(cronExpression,new Date())));
+                    }
+                    jobList.add(job);
+
+                }
+            }
+
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return jobList;
+
+    }
 }
+
+
+

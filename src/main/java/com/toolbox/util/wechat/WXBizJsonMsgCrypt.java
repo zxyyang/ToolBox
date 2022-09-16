@@ -277,8 +277,6 @@ public class WXBizJsonMsgCrypt {
 			throws AesException {
 		String signature = SHA1.getSHA1(token, timeStamp, nonce, echoStr);
 
-		System.err.println(signature);
-		System.err.println(msgSignature);
 		if (!signature.equals(msgSignature)) {
 			throw new AesException(AesException.ValidateSignatureError);
 		}

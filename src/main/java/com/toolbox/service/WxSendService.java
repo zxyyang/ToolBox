@@ -1,5 +1,9 @@
 package com.toolbox.service;
 
+import com.toolbox.vo.wx.RemindVo;
+
+import java.util.List;
+
 /**
  * Copyright: Copyright (C) 2022, Inc. All rights reserved.
  *
@@ -9,8 +13,13 @@ package com.toolbox.service;
 public interface WxSendService {
     String sendCorpWxMorningMsg();
 
-    String sendCorpWxNoteMsg(String content );
+    String sendCorpWxNoteMsg(String content,Integer type );
 
     String sendCorpWxNightMsg();
 
+    String addRemind(RemindVo remindVo);
+
+    List<RemindVo> getRemindList();
+
+    void deleteRemind(String id);
 }

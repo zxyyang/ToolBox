@@ -46,4 +46,9 @@ public class ConfigConstant {
 
     @Value("${wx-corp.EncodingAESKey}")
     private String encodingAESKey;
+
+    @Value("${wx-corp.man}")
+    private String man;
+    @Value("${wx-corp.woman}")
+    private String woman;
 }

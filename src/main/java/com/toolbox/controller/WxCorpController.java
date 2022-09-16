@@ -6,6 +6,7 @@ import com.toolbox.util.wechat.AesException;
 import com.toolbox.util.wechat.WXBizJsonMsgCrypt;
 import com.toolbox.valueobject.RequestBean;
 import com.toolbox.vo.config.ConfigConstant;
+import com.toolbox.vo.wx.RemindVo;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.List;
 
 /**
  * Copyright: Copyright (C) 2022, Inc. All rights reserved.
@@ -139,6 +141,40 @@ public class WxCorpController {
 
         return null;
 
+    }
+
+    @GetMapping("/getRemind")
+    public RequestBean<List<RemindVo>> getRemind() {
+        try {
+            List<RemindVo> remindList = wxSendService.getRemindList();
+            return  RequestBean.Success(remindList);
+        }
+        catch (Exception e){
+            return RequestBean.Error(e.getMessage());
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/addRemind")
+    public RequestBean<String> addRemind(@RequestParam RemindVo remindVo){
+        try {
+        String s = wxSendService.addRemind(remindVo);
+            return  RequestBean.Success(s);
+        }
+        catch (Exception e){
+            return RequestBean.Error(e.getMessage());
+        }
+    }
+
+    @GetMapping("/deleteRemind")
+    public  RequestBean<String> deleteRemind(String id){
+        try {
+            wxSendService.deleteRemind(id);
+            return  RequestBean.Success();
+        }
+        catch (Exception e){
+            return RequestBean.Error(e.getMessage());
+        }
     }
 
 }

@@ -1,14 +1,21 @@
 package com.toolbox.service.Impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.toolbox.job.RemindJob;
 import com.toolbox.service.ProverbService;
 import com.toolbox.service.TianQiService;
 import com.toolbox.service.WxSendService;
+import com.toolbox.util.DateToCron;
 import com.toolbox.util.DateUtils;
 import com.toolbox.util.HttpUtil;
+import com.toolbox.util.QuartzUtil;
 import com.toolbox.vo.config.ConfigConstant;
+import com.toolbox.vo.quartz.QuartzJobsVO;
+import com.toolbox.vo.wx.RemindVo;
 import lombok.extern.slf4j.Slf4j;
+import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +43,10 @@ public class WxSendServiceImpl implements WxSendService {
 
     @Autowired
     private ProverbService proverbService;
+
+    @Autowired
+    Scheduler scheduler;
+
 
     private String getCorpToken(String secret){
         String param  = "corpid="+configConstant.getCorpId()+"&corpsecret="+secret;
@@ -137,44 +148,42 @@ public class WxSendServiceImpl implements WxSendService {
     }
 
     @Override
-    public String sendCorpWxNoteMsg(String notes) {
+    public String sendCorpWxNoteMsg(String notes,Integer type) {
         String corpToken = getCorpToken(configConstant.getRemindSecret());
-        System.err.println(corpToken);
         Map<String, Object> map = new HashMap<>(5);
-        map.put("touser", "@all");
-        map.put("msgtype", "template_card");
+        switch (type){
+            case 0:{
+                map.put("touser", "@all");
+                break;
+            }
+            case 1:{
+                map.put("touser",configConstant.getMan());
+                break;
+            }
+            case 2:{
+                map.put("touser",configConstant.getWoman());
+                break;
+            }
+            default:{
+                map.put("touser", "@all");
+                break;
+            }
+        }
+
+        map.put("msgtype", "textcard");
         map.put("agentid", configConstant.getRemindId());
-        Map<String, Object> templateMap = new HashMap<>();
-        templateMap.put("card_type","button_interaction");
-        templateMap.put("task_id",DateUtil.parse(DateUtil.now(),"yyyyMMddHHmmssSSS"));
-        Map<String, Object> main_title = new HashMap<>();
-        main_title.put("title" ,"备忘录提醒来喽！");
-        main_title.put("desc",notes);
-        templateMap.put("main_title",main_title);
-        templateMap.put("sub_title_text","sub_title_text");
-        List<Object> button_list = new ArrayList<>();
-        Map<String, Object> ok = new HashMap<>();
-        ok.put("text","确定");
-        ok.put("style",1);
-        ok.put("key","reject");
-
-        Map<String, Object> next = new HashMap<>();
-        next.put("text","再续10分钟");
-        next.put("style",3);
-        next.put("key","approve");
-        button_list.add(ok);
-        button_list.add(next);
-        templateMap.put("button_list",button_list);
-
-
-        map.put("template_card",templateMap);
+        Map<String,Object> textcardMap = new HashMap<>();
+        textcardMap.put("title","提醒事项");
+        textcardMap.put("description","<div class=\"gray\">"+DateUtil.format(new Date(),"yyyy年MM月dd日 HH时mm分 ")+ DateUtil.dayOfWeekEnum(new Date()).toChinese()+ "</div> <div class=\"highlight\">-----------------------------------------------</div>"+" <div class=\"highlight\">"+notes+"</div>");
+        textcardMap.put("url","http://zxyang.cn");
+        textcardMap.put("btntxt","没有更多");
+        map.put("textcard",textcardMap);
         map.put("enable_id_trans",0);
         map.put("enable_duplicate_check",0);
         map.put("duplicate_check_interval",1800);
         String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send" + "?access_token=" + corpToken+"&debug=1";
         String data = HttpUtil.sendPost(url,JSONObject.toJSONString(map));
-        System.err.println(data);
-        return null;
+        return data;
 
     }
 
@@ -266,6 +275,31 @@ public class WxSendServiceImpl implements WxSendService {
         String url = "https://qyapi.weixin.qq.com/cgi-bin/message/send" + "?access_token=" + corpToken+"&debug=1";
         String data = HttpUtil.sendPost(url,JSONObject.toJSONString(map));
         return data;
+    }
+
+    @Override
+    public String addRemind(RemindVo remindVo) {
+        String id = IdUtil.fastSimpleUUID();
+        String corn = DateToCron.DateToCron(remindVo.getTime());
+        QuartzUtil.addJob(scheduler,id, RemindJob.class,remindVo,corn);
+        return null;
+    }
+
+    @Override
+    public List<RemindVo> getRemindList() {
+        List<QuartzJobsVO> allJobs = QuartzUtil.getAllJobs(scheduler);
+        List<RemindVo> remindVos = new ArrayList<>();
+        allJobs.forEach(job->{
+            RemindVo params = (RemindVo) job.getParams();
+            params.setStatus(job.getStatus());
+            remindVos.add(params);
+        });
+        return remindVos;
+    }
+
+    @Override
+    public void deleteRemind(String id) {
+        QuartzUtil.removeJob(scheduler,id);
     }
 
 /*    @Override

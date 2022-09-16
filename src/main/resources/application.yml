@@ -30,9 +30,9 @@ spring:
         url: jdbc:mysql://127.0.0.1:3306/toolbox?serverTimezone=GMT%2B8&useSSL=true
         username: root
     redis:
-        database:
+        database: 10
         host:
-        port:
+        port: 6379
         password:
     servlet:
         multipart:
@@ -53,3 +53,8 @@ wx-corp:
     corpId:
     weatherSecret:
     remindSecret:
+    token:
+    EncodingAESKey:
+    man:
+    woman:
+
