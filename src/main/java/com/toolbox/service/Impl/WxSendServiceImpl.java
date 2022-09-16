@@ -296,6 +296,7 @@ public class WxSendServiceImpl implements WxSendService {
         allJobs.forEach(job->{
             RemindVo params = (RemindVo) job.getParams();
             params.setStatus(job.getStatus());
+            params.setId(job.getJobDetailName());
             remindVos.add(params);
         });
         PageHelper.startPage(pageNumber, pageSize);// pageNum:当前页码数，第一次进来时默认为1（首页）

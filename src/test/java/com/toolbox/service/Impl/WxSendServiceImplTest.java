@@ -30,12 +30,11 @@ class WxSendServiceImplTest {
     @Test
     void testSend(){
         RemindVo remindVo = new RemindVo();
-        remindVo.setTime("2022-9-16 16:56");
+        remindVo.setTime("2022-9-16 15:56");
         remindVo.setContent("定时任务测试");
         remindVo.setType(1);
         QuartzUtil.startJobs(scheduler);
-       // List<RemindVo> remindList = wxSendService.getRemindList();
-        //System.err.println(JSONObject.toJSONString(remindList));
+        wxSendService.addRemind(remindVo);
 
     }
 }
