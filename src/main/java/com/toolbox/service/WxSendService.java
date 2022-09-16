@@ -1,5 +1,6 @@
 package com.toolbox.service;
 
+import com.github.pagehelper.PageInfo;
 import com.toolbox.vo.wx.RemindVo;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public interface WxSendService {
 
     String addRemind(RemindVo remindVo);
 
-    List<RemindVo> getRemindList();
+    PageInfo<RemindVo> getRemindList(Integer pageNumber, Integer pageSize);
 
     void deleteRemind(String id);
 }

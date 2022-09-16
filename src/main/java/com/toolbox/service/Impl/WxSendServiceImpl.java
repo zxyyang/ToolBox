@@ -3,6 +3,9 @@ package com.toolbox.service.Impl;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.toolbox.domain.Note;
 import com.toolbox.job.RemindJob;
 import com.toolbox.service.ProverbService;
 import com.toolbox.service.TianQiService;
@@ -18,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -286,7 +290,7 @@ public class WxSendServiceImpl implements WxSendService {
     }
 
     @Override
-    public List<RemindVo> getRemindList() {
+    public PageInfo<RemindVo> getRemindList(@RequestParam(defaultValue = "1") Integer pageNumber, Integer pageSize) {
         List<QuartzJobsVO> allJobs = QuartzUtil.getAllJobs(scheduler);
         List<RemindVo> remindVos = new ArrayList<>();
         allJobs.forEach(job->{
@@ -294,7 +298,9 @@ public class WxSendServiceImpl implements WxSendService {
             params.setStatus(job.getStatus());
             remindVos.add(params);
         });
-        return remindVos;
+        PageHelper.startPage(pageNumber, pageSize);// pageNum:当前页码数，第一次进来时默认为1（首页）
+        PageInfo<RemindVo> notePageInfo = new PageInfo<>(remindVos);// pageInfo:将分页数据和显示的数据封装到PageInfo当中
+        return notePageInfo;
     }
 
     @Override

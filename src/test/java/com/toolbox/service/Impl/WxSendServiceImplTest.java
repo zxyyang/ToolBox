@@ -34,8 +34,8 @@ class WxSendServiceImplTest {
         remindVo.setContent("定时任务测试");
         remindVo.setType(1);
         QuartzUtil.startJobs(scheduler);
-        List<RemindVo> remindList = wxSendService.getRemindList();
-        System.err.println(JSONObject.toJSONString(remindList));
+       // List<RemindVo> remindList = wxSendService.getRemindList();
+        //System.err.println(JSONObject.toJSONString(remindList));
 
     }
 }

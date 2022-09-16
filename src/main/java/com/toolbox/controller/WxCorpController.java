@@ -1,6 +1,7 @@
 package com.toolbox.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
 import com.toolbox.service.WxSendService;
 import com.toolbox.util.wechat.AesException;
 import com.toolbox.util.wechat.WXBizJsonMsgCrypt;
@@ -144,9 +145,10 @@ public class WxCorpController {
     }
 
     @GetMapping("/listRemind")
-    public RequestBean<List<RemindVo>> listRemind() {
+    public RequestBean< PageInfo<RemindVo>> listRemind(@RequestParam(defaultValue = "1", value = "pageNumber") Integer pageNumber,
+                                                  @RequestParam(value = "pageSize") Integer pageSize) {
         try {
-            List<RemindVo> remindList = wxSendService.getRemindList();
+            PageInfo<RemindVo> remindList = wxSendService.getRemindList(pageNumber, pageSize);
             return  RequestBean.Success(remindList);
         }
         catch (Exception e){
