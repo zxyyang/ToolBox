@@ -305,21 +305,27 @@ public class WxSendServiceImpl implements WxSendService {
             switch (job.getStatus()){
                 case "NONE":{
                     status = "无";
+                    break;
                 }
                 case "NORMAL":{
                     status = "正常";
+                    break;
                 }
                 case "PAUSED":{
                     status = "暂停";
+                    break;
                 }
                 case "COMPLETE":{
                     status = "完成";
+                    break;
                 }
                 case "ERROR":{
                     status = "错误";
+                    break;
                 }
                 case "BLOCKED":{
                     status = "阻塞";
+                    break;
                 }
             }
             params.setStatus(status);
