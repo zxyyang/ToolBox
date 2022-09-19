@@ -156,9 +156,9 @@ public class WxCorpController {
         }
     }
 
-    @ResponseBody
+
     @PostMapping("/addRemind")
-    public RequestBean<String> addRemind(@RequestParam RemindVo remindVo){
+    public RequestBean<String> addRemind(@RequestBody RemindVo remindVo){
         try {
         String s = wxSendService.addRemind(remindVo);
             return  RequestBean.Success(s);

@@ -295,7 +295,34 @@ public class WxSendServiceImpl implements WxSendService {
         List<RemindVo> remindVos = new ArrayList<>();
         allJobs.forEach(job->{
             RemindVo params = (RemindVo) job.getParams();
-            params.setStatus(job.getStatus());
+            //        NONE,
+            //        NORMAL,
+            //        PAUSED,
+            //        COMPLETE,
+            //        ERROR,
+            //        BLOCKED;
+            String status = "";
+            switch (job.getStatus()){
+                case "NONE":{
+                    status = "无";
+                }
+                case "NORMAL":{
+                    status = "正常";
+                }
+                case "PAUSED":{
+                    status = "暂停";
+                }
+                case "COMPLETE":{
+                    status = "完成";
+                }
+                case "ERROR":{
+                    status = "错误";
+                }
+                case "BLOCKED":{
+                    status = "阻塞";
+                }
+            }
+            params.setStatus(status);
             params.setId(job.getJobDetailName());
             remindVos.add(params);
         });
