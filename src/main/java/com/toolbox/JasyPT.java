@@ -42,6 +42,6 @@ public class JasyPT {
     }
 
     public static void main(String[] args) {
-        TestEncrypt("yang","yang");
+        TestEncrypt("","");
     }
 }
