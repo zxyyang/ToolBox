@@ -11,7 +11,7 @@
  Target Server Version : 50715
  File Encoding         : 65001
 
- Date: 16/09/2022 15:50:32
+ Date: 23/09/2022 18:51:35
 */
 
 SET NAMES utf8mb4;
@@ -136,6 +136,7 @@ CREATE TABLE `QRTZ_LOCKS`  (
 -- ----------------------------
 -- Records of QRTZ_LOCKS
 -- ----------------------------
+INSERT INTO `QRTZ_LOCKS` VALUES ('schedulerFactory', 'TRIGGER_ACCESS');
 
 -- ----------------------------
 -- Table structure for QRTZ_PAUSED_TRIGGER_GRPS
@@ -263,13 +264,11 @@ CREATE TABLE `file`  (
   `file_name` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `file_path` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '/',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 157 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of file
 -- ----------------------------
-INSERT INTO `file` VALUES (155, '高并发解决方案.pdf', '/');
-INSERT INTO `file` VALUES (156, 'undefined/', '/');
 
 -- ----------------------------
 -- Table structure for note
