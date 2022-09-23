@@ -19,6 +19,8 @@ import com.toolbox.vo.quartz.QuartzJobsVO;
 import com.toolbox.vo.wx.RemindVo;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.Scheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,7 +52,7 @@ public class WxSendServiceImpl implements WxSendService {
 
     @Autowired
     Scheduler scheduler;
-
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private String getCorpToken(String secret){
         String param  = "corpid="+configConstant.getCorpId()+"&corpsecret="+secret;
@@ -382,7 +384,7 @@ public class WxSendServiceImpl implements WxSendService {
                 birthDay = birthDay + "天";
             }
         } catch (ParseException e) {
-            log.error("togetherDate获取失败" + e.getMessage());
+            logger.error("togetherDate获取失败" + e.getMessage());
         }
         return birthDay;
     }
@@ -402,7 +404,7 @@ public class WxSendServiceImpl implements WxSendService {
         try {
             togetherDay = "第" + dateUtil.daysBetween(configConstant.getTogetherDate(), date) + "天";
         } catch (ParseException e) {
-            log.error("togetherDate获取失败" + e.getMessage());
+            logger.error("togetherDate获取失败" + e.getMessage());
         }
         return togetherDay;
     }

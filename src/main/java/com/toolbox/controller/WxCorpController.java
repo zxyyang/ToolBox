@@ -11,6 +11,8 @@ import com.toolbox.vo.wx.RemindVo;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +41,8 @@ public class WxCorpController {
 
     @Autowired
     ConfigConstant configConstant;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     /**
      * 获取Token
      * 每天早上7：30执行推送
@@ -47,7 +51,7 @@ public class WxCorpController {
     @Scheduled(cron = "0 30 7 * * ?")
     @GetMapping("/sendMorning")
     public RequestBean<String> sendMorning() {
-        log.info("早晨推送启动！");
+        logger.info("早晨推送启动！");
         try {
             String s = wxSendService.sendCorpWxMorningMsg();
             return  RequestBean.Success(s);
@@ -65,7 +69,7 @@ public class WxCorpController {
     @Scheduled(cron = "0 0 21 * * ?")
     @GetMapping("/sendNight")
     public RequestBean<String> sendNight() {
-        log.info("晚上推送启动！");
+        logger.info("晚上推送启动！");
         try {
             String s = wxSendService.sendCorpWxNightMsg();
             return  RequestBean.Success(s);
@@ -99,13 +103,13 @@ public class WxCorpController {
         String sEchoStr; //需要返回的明文
         try {
             sEchoStr = wxcpt.VerifyURL(msgSignature, timestamp, nonce, echostr);
-            log.info("-----验证url的echostr: " + sEchoStr);
+            logger.info("-----验证url的echostr: " + sEchoStr);
             // 验证URL成功，将sEchoStr返回
             PrintWriter writer = response.getWriter();
             writer.write(sEchoStr);
             writer.flush();
         } catch (Exception e) {
-            log.error("-----验证url失败: ");
+            logger.error("-----验证url失败: ");
             //验证URL失败，错误原因请查看异常
             e.printStackTrace();
         }
@@ -133,12 +137,12 @@ public class WxCorpController {
         InputStream inputStream = request.getInputStream();
         String sPostData = IOUtils.toString(inputStream, "UTF-8");
         String sMsg = wxcpt.DecryptMsg(msgSignature, timestamp, nonce, sPostData);
-        log.info("解析后的消息: " + sMsg);
+        logger.info("解析后的消息: " + sMsg);
         JSONObject json = JSONObject.parseObject(sMsg);
         String Content = json.getString("Content");
         //内容就行业务处理
         //TODO 业务处理
-        log.error("Content：" + Content);
+        logger.error("Content：" + Content);
 
         return null;
 

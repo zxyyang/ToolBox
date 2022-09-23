@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -32,13 +34,14 @@ public class ScheduleJobInitListener implements ApplicationRunner {
 	@Autowired
 	private Scheduler scheduler;
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
 		try {
 			scheduler.start();
-			log.info("\n\n\n===========================启动所有定时任务===========================\n\n\n");
+			logger.info("\n\n\n===========================启动所有定时任务===========================\n\n\n");
 		}catch (Exception e){
-			log.error("定时任务启动失败：{}",e.getMessage());
+			logger.error("定时任务启动失败：{}",e.getMessage());
 		}
 
 	}

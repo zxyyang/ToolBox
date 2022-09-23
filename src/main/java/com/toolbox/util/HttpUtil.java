@@ -1,6 +1,8 @@
 package com.toolbox.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -21,6 +23,7 @@ import java.util.Map;
 @Slf4j
 @Component
 public class HttpUtil {
+    private static final Logger logger = LoggerFactory.getLogger(HttpUtil.class);
     /**
      * 向指定URL发送GET方法的请求
      *
@@ -59,7 +62,7 @@ public class HttpUtil {
                 result += line;
             }
         } catch (Exception e) {
-            log.error("发送GET请求出现异常！" + e);
+            logger.error("发送GET请求出现异常！" + e);
             e.printStackTrace();
         }
         // 使用finally块来关闭输入流

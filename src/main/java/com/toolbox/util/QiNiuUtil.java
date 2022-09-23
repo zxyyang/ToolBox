@@ -11,6 +11,8 @@ import java.util.TimeZone;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.qiniu.storage.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -51,7 +53,7 @@ public class QiNiuUtil {
 
 	@Autowired
 	private  QiNiuConfig qiNiuConfig ;
-
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/***
 	 * 配置类
@@ -491,7 +493,7 @@ public class QiNiuUtil {
 			return filesList;
 
 		} catch (QiniuException e) {
-			log.error(ExceptionUtil.stacktraceToString(e));
+			logger.error(ExceptionUtil.stacktraceToString(e));
 			return null;
 		}
 

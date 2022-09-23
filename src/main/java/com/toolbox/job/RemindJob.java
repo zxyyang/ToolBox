@@ -5,6 +5,8 @@ import com.toolbox.service.WxSendService;
 import com.toolbox.vo.wx.RemindVo;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,9 +26,10 @@ public class RemindJob implements Job {
     @Autowired
     private Scheduler scheduler;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        log.info("备忘录提醒开始执行.....");
+        logger.info("备忘录提醒开始执行.....");
         JobDataMap jobDataMap = jobExecutionContext.getJobDetail().getJobDataMap();
         RemindVo params = JSONObject.parseObject(JSONObject.toJSONString(jobDataMap.get("params")), RemindVo.class);
         wxSendService.sendCorpWxNoteMsg(params.getContent(), params.getType());
@@ -35,6 +38,6 @@ public class RemindJob implements Job {
         } catch (SchedulerException e) {
             throw new RuntimeException(e);
         }
-        log.info("备忘录提醒执行完成！");
+        logger.info("备忘录提醒执行完成！");
     }
 }

@@ -98,6 +98,22 @@
             <artifactId>log4j</artifactId>
             <version>1.2.17</version>
         </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.11</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.3</version>
+        </dependency>
 
         <!--swagger图形化接口-->
         <dependency>
@@ -223,6 +239,7 @@
             <artifactId>jasypt-spring-boot-starter</artifactId>
             <version>2.1.0</version>
         </dependency>
+
     </dependencies>
 
 
