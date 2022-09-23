@@ -217,6 +217,12 @@
             <artifactId>c3p0</artifactId>
             <version>0.9.5.2</version>
         </dependency>
+        <!--        yml加密 -->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>2.1.0</version>
+        </dependency>
     </dependencies>
 
 
@@ -232,14 +238,6 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.github.ulisesbocchio</groupId>
-                <artifactId>jasypt-maven-plugin</artifactId>
-                <version>3.0.4</version>
-                <configuration>
-                    <!--            <path>file:./config/application.yml</path>-->
                 </configuration>
             </plugin>
         </plugins>

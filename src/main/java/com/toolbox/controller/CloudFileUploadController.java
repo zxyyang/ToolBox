@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toolbox.util.QiNiuUtil;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -16,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.toolbox.domain.File;
 import com.toolbox.service.FileService;
-import com.toolbox.util.QiNiuUtil;
 import com.toolbox.valueobject.Files;
 import com.toolbox.valueobject.RequestBean;
 import com.toolbox.vo.DeleteResult;
@@ -32,7 +32,10 @@ import io.swagger.annotations.ApiOperation;
 public class CloudFileUploadController {
 
 	@Autowired
-	FileService fileService;
+	private FileService fileService;
+	
+	@Autowired
+	private QiNiuUtil qiNiuUtil;
 
 	 @RequiresPermissions(value = { "add" })
 	@ApiOperation(value = "/upload", notes = "上传文件", httpMethod = "POST")
@@ -40,7 +43,7 @@ public class CloudFileUploadController {
 	public RequestBean<String> upload(@RequestParam("file") MultipartFile file, @RequestParam(defaultValue = "/") String path) {
 		System.out.println("上传开始：");
 		try {
-			if (QiNiuUtil.uploadMultipartFile(file, file.getOriginalFilename(), false)) {
+			if (qiNiuUtil.uploadMultipartFile(file, file.getOriginalFilename(), false)) {
 				fileService.add(file.getOriginalFilename(), path);
 			} else {
 				return RequestBean.Error();
@@ -55,7 +58,7 @@ public class CloudFileUploadController {
 	@ApiOperation(value = "/downLoadByIe", notes = "调用浏览器下载文件", httpMethod = "GET")
 	@GetMapping("/downLoadByIe")
 	public ResponseEntity<Resource> downLoadByIe(String fileName) throws IOException {
-		Resource file = QiNiuUtil.downloadByIE(fileName);
+		Resource file = qiNiuUtil.downloadByIE(fileName);
 		return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=\"" + URLEncoder.encode(fileName, "UTF-8") + "\"")
 				.body(file);
 	}
@@ -65,30 +68,30 @@ public class CloudFileUploadController {
 	@GetMapping("/downLoad")
 	public RequestBean<down_ret> downLoad(String fileName) throws IOException {
 
-		return RequestBean.Success(QiNiuUtil.downloadByUrl(fileName));
+		return RequestBean.Success(qiNiuUtil.downloadByUrl(fileName));
 	}
 
 	@RequiresPermissions(value = { "list" })
 	@ApiOperation(value = "/list", notes = "文件目录", httpMethod = "GET")
 	@GetMapping("/list")
-	public RequestBean<List<Files>> list() throws JsonProcessingException {
-		List<Files> directory = QiNiuUtil.directory();
+	public RequestBean<List<Files>> list() throws Exception {
+		List<Files> directory = qiNiuUtil.directory();
 		return RequestBean.Success(directory);
 	}
 
 	@RequiresPermissions(value = { "list" })
 	@ApiOperation(value = "/listByPath", notes = "文件目录", httpMethod = "GET")
 	@GetMapping("/listByPath")
-	public RequestBean<List<Files>> listByPath(String path) throws JsonProcessingException {
+	public RequestBean<List<Files>> listByPath(String path) throws Exception {
 
-		return RequestBean.Success(QiNiuUtil.listByPath(fileService.selectName(path)));
+		return RequestBean.Success(qiNiuUtil.listByPath(fileService.selectName(path)));
 	}
 
 	@RequiresPermissions(value = { "update" })
 	@ApiOperation(value = "/reName", notes = "修改名字", httpMethod = "POST")
 	@PostMapping("/reName")
-	public RequestBean<Boolean> reName(String originName, String objectName) {
-		Boolean reNameIs = QiNiuUtil.reNameOrMove(originName, objectName);
+	public RequestBean<Boolean> reName(String originName, String objectName) throws Exception {
+		Boolean reNameIs = qiNiuUtil.reNameOrMove(originName, objectName);
 		if (reNameIs) {
 			fileService.updateName(originName, objectName);
 			return RequestBean.Success();
@@ -101,8 +104,8 @@ public class CloudFileUploadController {
 	@RequiresPermissions(value = { "delete" })
 	@ApiOperation(value = "/batchDelete", notes = "批量删除", httpMethod = "POST")
 	@PostMapping("/batchDelete")
-	public RequestBean<List<DeleteResult>> batchDelete(String[] name) throws JsonProcessingException {
-		List<DeleteResult> deleteResultList = QiNiuUtil.batchDelete(name);
+	public RequestBean<List<DeleteResult>> batchDelete(String[] name) throws Exception {
+		List<DeleteResult> deleteResultList = qiNiuUtil.batchDelete(name);
 		List<String> list = new ArrayList<>();
 
 		// 取出只有成功的操作key
@@ -123,8 +126,8 @@ public class CloudFileUploadController {
 	@RequiresPermissions(value = { "add" })
 	@ApiOperation(value = "/networkResources", notes = "网络地址资源存储在云端", httpMethod = "POST")
 	@PostMapping("/networkResources")
-	public RequestBean<Boolean> networkResources(String fileName, String SrcURL, @RequestParam(defaultValue = "/") String path) {
-		String name = QiNiuUtil.networkResources(fileName, SrcURL);
+	public RequestBean<Boolean> networkResources(String fileName, String SrcURL, @RequestParam(defaultValue = "/") String path) throws Exception {
+		String name = qiNiuUtil.networkResources(fileName, SrcURL);
 		if (name != null) {
 			fileService.add(name, path);
 			return RequestBean.Success();
@@ -145,7 +148,7 @@ public class CloudFileUploadController {
 	@RequiresPermissions(value = { "select" })
 	@ApiOperation(value = "/selectByName", notes = "查询文件", httpMethod = "GET")
 	@GetMapping("/selectByName")
-	public RequestBean<List<Files>> selectByName(String name) throws JsonProcessingException {
+	public RequestBean<List<Files>> selectByName(String name) throws Exception {
 		List<File> files = fileService.selectByName(name);
 		List<String> list = new ArrayList<>();
 		for (File file : files) {
@@ -153,7 +156,7 @@ public class CloudFileUploadController {
 		}
 		String[] names = list.toArray(new String[list.size()]);
 
-		return RequestBean.Success(QiNiuUtil.listByPath(names));
+		return RequestBean.Success(qiNiuUtil.listByPath(names));
 	}
 
 	@RequiresPermissions(value = { "add" })
@@ -162,7 +165,7 @@ public class CloudFileUploadController {
 	public RequestBean<String> noteAddImage(@RequestParam("file") MultipartFile file) {
 		try {
 
-			String url = QiNiuUtil.uploadNoteImage(file, RandomUtil.randomString(8) + (file.getOriginalFilename()), false);
+			String url = qiNiuUtil.uploadNoteImage(file, RandomUtil.randomString(8) + (file.getOriginalFilename()), false);
 			if (url != null) {
 				return RequestBean.Success(url);
 			} else {
@@ -181,7 +184,7 @@ public class CloudFileUploadController {
 		try {
 			String[] split = url.split("/");
 			String fileNanme = split[split.length - 1];
-			QiNiuUtil.deleteNoteImage(fileNanme);
+			qiNiuUtil.deleteNoteImage(fileNanme);
 
 		} catch (Exception e) {
 			RequestBean.Error(e.toString());

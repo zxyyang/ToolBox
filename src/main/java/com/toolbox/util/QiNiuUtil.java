@@ -8,19 +8,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
+import com.alibaba.fastjson.JSONObject;
+import com.qiniu.storage.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
-import com.qiniu.storage.BucketManager;
-import com.qiniu.storage.Configuration;
-import com.qiniu.storage.Region;
-import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.BatchStatus;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.storage.model.FetchRet;
@@ -43,18 +43,23 @@ import okhttp3.ResponseBody;
  * 七牛上传下载工具类
  **/
 @Slf4j
+@Component
 public class QiNiuUtil {
 
 	@Autowired
 	private FileService fileService;
 
+	@Autowired
+	private  QiNiuConfig qiNiuConfig ;
+
+
 	/***
 	 * 配置类
 	 */
-	public static BucketManager configBucketManager() {
-		Configuration cfg = new Configuration(QiNiuConfig.getInstance().getZone());
+	public  BucketManager configBucketManager() throws Exception {
+		Configuration cfg = new Configuration((Region) qiNiuConfig.getZone());
 		// ...生成上传凭证，然后准备上传
-		Auth auth = Auth.create(QiNiuConfig.getInstance().getAccessKey(), QiNiuConfig.getInstance().getSecretKey());
+		Auth auth = Auth.create(qiNiuConfig.getAccessKey(), qiNiuConfig.getSecretKey());
 		BucketManager bucketManager = new BucketManager(auth, cfg);
 		return bucketManager;
 	}
@@ -70,18 +75,18 @@ public class QiNiuUtil {
 	 *            是否覆盖同名同位置文件
 	 * @return
 	 */
-	public static boolean upload(String localFilePath, String key, boolean override) {
+	public  boolean upload(String localFilePath, String key, boolean override) throws Exception {
 		// 构造一个带指定Zone对象的配置类
-		Configuration cfg = new Configuration(QiNiuConfig.getInstance().getZone());
+		Configuration cfg = new Configuration((Region) qiNiuConfig.getZone());
 		// ...其他参数参考类注释
 		UploadManager uploadManager = new UploadManager(cfg);
 		// ...生成上传凭证，然后准备上传
-		Auth auth = Auth.create(QiNiuConfig.getInstance().getAccessKey(), QiNiuConfig.getInstance().getSecretKey());
+		Auth auth = Auth.create(qiNiuConfig.getAccessKey(), qiNiuConfig.getSecretKey());
 		String upToken;
 		if (override) {
-			upToken = auth.uploadToken(QiNiuConfig.getInstance().getBucket(), key);// 覆盖上传凭证
+			upToken = auth.uploadToken(qiNiuConfig.getBucket(), key);// 覆盖上传凭证
 		} else {
-			upToken = auth.uploadToken(QiNiuConfig.getInstance().getBucket());
+			upToken = auth.uploadToken(qiNiuConfig.getBucket());
 		}
 		try {
 			Response response = uploadManager.put(localFilePath, key, upToken);
@@ -117,7 +122,7 @@ public class QiNiuUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static boolean uploadBase64(int l, String file64, String key, boolean override) throws IOException {
+	public  boolean uploadBase64(int l, String file64, String key, boolean override) throws IOException {
 		/*
 		 * FileInputStream fis = null;
 		 * int l = (int) (new File(localFilePath).length());
@@ -137,9 +142,9 @@ public class QiNiuUtil {
 		Auth auth = getAuth();
 		String upToken;
 		if (override) {
-			upToken = auth.uploadToken(QiNiuConfig.getInstance().getBucket(), key);// 覆盖上传凭证
+			upToken = auth.uploadToken(qiNiuConfig.getBucket(), key);// 覆盖上传凭证
 		} else {
-			upToken = auth.uploadToken(QiNiuConfig.getInstance().getBucket());
+			upToken = auth.uploadToken(qiNiuConfig.getBucket());
 		}
 
 		String url = "http://upload.qiniup.com/putb64/" + l + "/key/" + UrlSafeBase64.encodeToString(key);
@@ -162,11 +167,11 @@ public class QiNiuUtil {
 	 * @return
 	 * @throws UnsupportedEncodingException
 	 */
-	public static String fileUrl(String fileName) throws UnsupportedEncodingException {
+	public  String fileUrl(String fileName) throws UnsupportedEncodingException {
 		String encodedFileName = URLEncoder.encode(fileName, "utf-8");
-		String publicUrl = String.format("%s/%s", QiNiuConfig.getInstance().getDomainOfBucket(), encodedFileName);
+		String publicUrl = String.format("%s/%s", qiNiuConfig.getDomainOfBucket(), encodedFileName);
 		Auth auth = getAuth();
-		long expireInSeconds = QiNiuConfig.getInstance().getExpireInSeconds();
+		long expireInSeconds = qiNiuConfig.getExpireInSeconds();
 		if (-1 == expireInSeconds) {
 			return auth.privateDownloadUrl(publicUrl);
 		}
@@ -182,7 +187,7 @@ public class QiNiuUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static boolean uploadMultipartFile(MultipartFile file, String key, boolean override) {
+	public  boolean uploadMultipartFile(MultipartFile file, String key, boolean override) {
 		long startL = new Date().getTime();
 		System.out.println("开始时间：" + startL);
 		// 构造一个带指定Zone对象的配置类
@@ -206,9 +211,9 @@ public class QiNiuUtil {
 			Auth auth = getAuth();
 			String upToken;
 			if (override) {
-				upToken = auth.uploadToken(QiNiuConfig.getInstance().getBucket(), key);// 覆盖上传凭证
+				upToken = auth.uploadToken(qiNiuConfig.getBucket(), key);// 覆盖上传凭证
 			} else {
-				upToken = auth.uploadToken(QiNiuConfig.getInstance().getBucket());
+				upToken = auth.uploadToken(qiNiuConfig.getBucket());
 			}
 			// 默认上传接口回复对象
 			DefaultPutRet putRet;
@@ -241,11 +246,11 @@ public class QiNiuUtil {
 	 * @param override
 	 * @return
 	 */
-	public static boolean uploadByPart(File file, String key, boolean override) throws FileNotFoundException, QiniuException {
+	public  boolean uploadByPart(File file, String key, boolean override) throws FileNotFoundException, QiniuException {
 		long startL = new Date().getTime();
 		System.out.println("开始时间：" + startL);
 		// 构造一个带指定Zone对象的配置类
-		// Configuration cfg = new Configuration(QiNiuConfig.getInstance().getZone());
+		// Configuration cfg = new Configuration((Region) zoneMaker(qiNiuConfig).getZone());
 		Configuration cfg = new Configuration(Zone.huadong());
 		// 定义文件每个片大小
 		cfg.resumableUploadAPIV2BlockSize = 1;
@@ -266,9 +271,9 @@ public class QiNiuUtil {
 		Auth auth = getAuth();
 		String upToken;
 		if (override) {
-			upToken = auth.uploadToken(QiNiuConfig.getInstance().getBucket(), key);// 覆盖上传凭证
+			upToken = auth.uploadToken(qiNiuConfig.getBucket(), key);// 覆盖上传凭证
 		} else {
-			upToken = auth.uploadToken(QiNiuConfig.getInstance().getBucket());
+			upToken = auth.uploadToken(qiNiuConfig.getBucket());
 		}
 		// 默认上传接口回复对象
 		DefaultPutRet putRet;
@@ -285,8 +290,8 @@ public class QiNiuUtil {
 
 	}
 
-	public static Auth getAuth() {
-		Auth auth = Auth.create(QiNiuConfig.getInstance().getAccessKey(), QiNiuConfig.getInstance().getSecretKey());
+	public  Auth getAuth() {
+		Auth auth = Auth.create(qiNiuConfig.getAccessKey(), qiNiuConfig.getSecretKey());
 		return auth;
 	}
 
@@ -295,7 +300,7 @@ public class QiNiuUtil {
 	 *
 	 * @param targetUrl
 	 */
-	public static void downloadBase(String targetUrl) {
+	public  void downloadBase(String targetUrl) {
 		// 获取downloadUrl
 		String downloadUrl = getDownloadUrl(targetUrl);
 		// 本地保存路径
@@ -309,7 +314,7 @@ public class QiNiuUtil {
 	 * @param url
 	 * @param filepath
 	 */
-	private static void download(String url, String filepath) {
+	private  void download(String url, String filepath) {
 		OkHttpClient client = new OkHttpClient();
 		Request req = new Request.Builder().url(url).build();
 		okhttp3.Response resp = null;
@@ -338,8 +343,8 @@ public class QiNiuUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static Resource downloadByIE(String fileName) throws IOException {
-		String domain = QiNiuConfig.getInstance().getDomainOfBucket();
+	public  Resource downloadByIE(String fileName) throws IOException {
+		String domain = qiNiuConfig.getDomainOfBucket();
 		// 封装下载链接
 		String targetUrl = "http://" + domain + "/" + fileName;
 		String downloadUrl = getDownloadUrl(targetUrl);
@@ -352,8 +357,8 @@ public class QiNiuUtil {
 
 	}
 
-	public static down_ret downloadByUrl(String fileName) throws IOException {
-		String domain = QiNiuConfig.getInstance().getDomainOfBucket();
+	public  down_ret downloadByUrl(String fileName) throws IOException {
+		String domain = qiNiuConfig.getDomainOfBucket();
 		// 封装下载链接
 		String targetUrl = "http://" + domain + "/" + fileName;
 		String downloadUrl = getDownloadUrl(targetUrl);
@@ -370,7 +375,7 @@ public class QiNiuUtil {
 	 * @param is
 	 * @return
 	 */
-	private static byte[] readInputStream(InputStream is) {
+	private  byte[] readInputStream(InputStream is) {
 		ByteArrayOutputStream writer = new ByteArrayOutputStream();
 		byte[] buff = new byte[1024 * 2];
 		int len = 0;
@@ -391,7 +396,7 @@ public class QiNiuUtil {
 	 * @param targetUrl
 	 * @return
 	 */
-	public static String getDownloadUrl(String targetUrl) {
+	public  String getDownloadUrl(String targetUrl) {
 		String downloadUrl = getAuth().privateDownloadUrl(targetUrl);
 		return downloadUrl;
 	}
@@ -399,10 +404,10 @@ public class QiNiuUtil {
 	/***
 	 * 删除文件
 	 */
-	public static Boolean delete(String fileName) {
+	public  Boolean delete(String fileName) throws Exception {
 		BucketManager bucketManager = configBucketManager();
 		try {
-			bucketManager.delete(QiNiuConfig.getInstance().getBucket(), fileName);
+			bucketManager.delete(qiNiuConfig.getBucket(), fileName);
 			return true;
 		} catch (QiniuException e) {
 			System.out.println("删除失败" + e.response.toString());
@@ -416,7 +421,7 @@ public class QiNiuUtil {
 	 *
 	 * @return
 	 */
-	public static List<Files> directory() {
+	public  List<Files> directory() throws Exception {
 		BucketManager bucketManager = configBucketManager();
 		// 文件名前缀
 		String prefix = "";
@@ -425,7 +430,7 @@ public class QiNiuUtil {
 		// 指定目录分隔符，列出所有公共前缀（模拟列出目录效果）。缺省值为空字符串
 		String delimiter = "";
 		// 列举空间文件列表
-		BucketManager.FileListIterator fileListIterator = bucketManager.createFileListIterator(QiNiuConfig.getInstance().getBucket(), prefix, limit,
+		BucketManager.FileListIterator fileListIterator = bucketManager.createFileListIterator(qiNiuConfig.getBucket(), prefix, limit,
 				delimiter);
 
 		List<Files> filesList = new ArrayList<>();
@@ -454,12 +459,12 @@ public class QiNiuUtil {
 	 * @return
 	 */
 
-	public static List<Files> listByPath(String[] name) {
+	public  List<Files> listByPath(String[] name) throws Exception {
 		BucketManager bucketManager = configBucketManager();
 
 		try {
 			BucketManager.BatchOperations batchOperations = new BucketManager.BatchOperations();
-			batchOperations.addStatOps(QiNiuConfig.getInstance().getBucket(), name);
+			batchOperations.addStatOps(qiNiuConfig.getBucket(), name);
 			Response response = bucketManager.batch(batchOperations);
 			BatchStatus[] batchStatusList = response.jsonToObject(BatchStatus[].class);
 			List<Files> filesList = new ArrayList<>();
@@ -486,7 +491,7 @@ public class QiNiuUtil {
 			return filesList;
 
 		} catch (QiniuException e) {
-			System.out.println(e.response.toString());
+			log.error(ExceptionUtil.stacktraceToString(e));
 			return null;
 		}
 
@@ -504,11 +509,11 @@ public class QiNiuUtil {
 	 * @return
 	 */
 
-	public static Boolean reNameOrMove(String originName, String objectName) {
+	public  Boolean reNameOrMove(String originName, String objectName) throws Exception {
 
 		BucketManager bucketManager = configBucketManager();
 		try {
-			bucketManager.move(QiNiuConfig.getInstance().getBucket(), originName, QiNiuConfig.getInstance().getBucket(), objectName);
+			bucketManager.move(qiNiuConfig.getBucket(), originName, qiNiuConfig.getBucket(), objectName);
 
 		} catch (QiniuException e) {
 			System.out.println(e.response.toString());
@@ -524,10 +529,10 @@ public class QiNiuUtil {
 	 * @param SrcURL
 	 * @return
 	 */
-	public static String networkResources(String KEY, String SrcURL) {
+	public  String networkResources(String KEY, String SrcURL) throws Exception {
 		BucketManager bucketManager = configBucketManager();
 		try {
-			FetchRet fetchRet = bucketManager.fetch(SrcURL, QiNiuConfig.getInstance().getBucket(), KEY);
+			FetchRet fetchRet = bucketManager.fetch(SrcURL, qiNiuConfig.getBucket(), KEY);
 			// 修改存储名字，带后缀名
 			String[] type = fetchRet.mimeType.split("/");
 			String UrlFilename = fetchRet.key + "." + type[1];
@@ -550,12 +555,12 @@ public class QiNiuUtil {
 	 * @param fileNameList
 	 * @return
 	 */
-	public static List<DeleteResult> batchDelete(String[] fileNameList) {
+	public  List<DeleteResult> batchDelete(String[] fileNameList) throws Exception {
 		BucketManager bucketManager = configBucketManager();
 		List<DeleteResult> deleteResults = new ArrayList<>();
 		try {
 			BucketManager.BatchOperations batchOperations = new BucketManager.BatchOperations();
-			batchOperations.addDeleteOp(QiNiuConfig.getInstance().getBucket(), fileNameList);
+			batchOperations.addDeleteOp(qiNiuConfig.getBucket(), fileNameList);
 			Response response = bucketManager.batch(batchOperations);
 			BatchStatus[] batchStatuses = response.jsonToObject(BatchStatus[].class);
 
@@ -586,13 +591,12 @@ public class QiNiuUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String uploadNoteImage(MultipartFile file, String key, boolean override) {
+	public  String uploadNoteImage(MultipartFile file, String key, boolean override) throws Exception {
 
-		// 构造一个带指定Zone对象的配置类
-		Configuration cfg = new Configuration(QiNiuConfig.getInstance().getImageZone());
+		Configuration cfg = new Configuration((Region) qiNiuConfig.getImageZone());
 		// ...其他参数参考类注释
 		UploadManager uploadManager = new UploadManager(cfg);
-		String domain = QiNiuConfig.getInstance().getImageDomainOfBucket();
+		String domain = qiNiuConfig.getImageDomainOfBucket();
 		// 把文件转化为字节数组
 		InputStream is = null;
 		ByteArrayOutputStream bos = null;
@@ -639,13 +643,13 @@ public class QiNiuUtil {
 	/***
 	 * 删除文件
 	 */
-	public static Boolean deleteNoteImage(String fileName) {
-		Configuration cfg = new Configuration(QiNiuConfig.getInstance().getImageZone());
+	public  Boolean deleteNoteImage(String fileName) throws Exception {
+		Configuration cfg = new Configuration((Region) qiNiuConfig.getImageZone());
 		// ...生成上传凭证，然后准备上传
-		Auth auth = Auth.create(QiNiuConfig.getInstance().getAccessKey(), QiNiuConfig.getInstance().getSecretKey());
+		Auth auth = Auth.create(qiNiuConfig.getAccessKey(), qiNiuConfig.getSecretKey());
 		BucketManager bucketManager = new BucketManager(auth, cfg);
 		try {
-			bucketManager.delete(QiNiuConfig.getInstance().getImageBucket(), fileName);
+			bucketManager.delete(qiNiuConfig.getImageBucket(), fileName);
 			System.out.println("删除成功！");
 			return true;
 		} catch (QiniuException e) {

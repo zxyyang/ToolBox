@@ -1,5 +1,9 @@
+jasypt:
+    encryptor:
+        algorithm: PBEWithMD5AndDES
+        password:
 ApiSpace:
-    token:
+    token: ENC(ei8kYBdXI2DZcPLoTjsvb8Q40KDKfra8DEJfM359jHVg4jDE24nzTKT01nhu8kEA)
 mconfig:
     swagger-ui-open: ture
 message:
@@ -9,7 +13,9 @@ message:
         togetherDate: '2021-12-25'
 mybatis:
     configuration:
-        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+        #控制台打印
+        #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+        log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
         map-underscore-to-camel-case: true
     type-aliases-package: com.neo.entity
 server:
@@ -26,14 +32,20 @@ server:
 spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        password: root
+        password: ENC(K1V0jRH5B42AuQji4sQx2Q==)
         url: jdbc:mysql://127.0.0.1:3306/toolbox?serverTimezone=GMT%2B8&useSSL=true
         username: root
+        #本地
+#    redis:
+#        database: 10
+#        host: ENC(g3ijBMJI6NYTeNwbUEsw6Cx0ACeiB9I5Wm4qEcjfL823Wib+ZkGSkk28KhvbIZloxNqu6YRRrBI=)
+#        port: 6379
+#        password: ENC(ZY9jcj8rbRwC9S8L7v22eRr/X6li4cZu)
     redis:
-        database: 10
-        host:
-        port: 6379
-        password:
+        database: 1
+        host: 127.0.0.1
+        port: 16379
+        password: ENC(/3xTmnXNqdopzF30v1rbzg==)
     servlet:
         multipart:
             enabled: true
@@ -44,17 +56,55 @@ spring:
         cache: false
 weather:
     config:
-        appSecret:
-        appid:
-        city: 上海
+        appSecret: ENC(YvJu3wdqPlOXse2iRTa11CaHLHO/LVss)
+        appid: ENC(F6xUB23uzQ0QfEULTIE/jQu4+/0du2Zr)
+        city: "上海"
 wx-corp:
-    weatherId:
-    remindId:
-    corpId:
-    weatherSecret:
-    remindSecret:
-    token:
-    EncodingAESKey:
-    man:
-    woman:
+    weatherId: ENC(iM8HSr3MBs4YQpFncXIj8g==)
+    remindId: ENC(ozN0G3MhkG8GyPPJCAR4KQ==)
+    corpId: ENC(bBK1GX6EcUol1N4bxAhdWRlDbBMhd/DGf/r1pYWeYU0=)
+    weatherSecret: ENC(xO4YVvegYZmytqVUuJDCs+2T6cy1YISpmpQMHIm9gHqmgMlNK2nh4+47O9/2vbW27ZBn5sx4Lus=)
 
+    remindSecret: ENC(zLtlyyMRkweERmfMtWVqoWScI82ZegOw2G7ETAf/05Q4tSnxWgHGpusjnAttguA7KQwCPk1PDQw=)
+    token: ENC(gClkh3kO26ldWt9rcb9crw==)
+    EncodingAESKey: ENC(E7mhVv0bGmjQLI219Y6tEWrcJ6rfkrUBd6VNQF5acXfRyYnc3p8vg8cDpIN5ZqswMAZNP8lU44M=)
+    man: ENC(E3N7Kn4OmFKQxtoWFnAN8ZBX3hcRk8lK)
+    woman: ENC(m2K5A0NC+ETV4Wuxh0RxeIY4Tqz+m+HB)
+#quartz
+org:
+    quartz:
+        dataSource:
+            # qzDS 数据源
+            qzDS:
+                URL: jdbc:mysql://127.0.0.1:3306/toolbox?serverTimezone=GMT%2B8&useSSL=true
+                driver: com.mysql.cj.jdbc.Driver
+                # 并发个数
+                maxConnections: 10
+                password: ENC(YhQNwbKLhEYPLw3w2LC0jQ==)
+                #password: root
+                user: root
+        jobStore:
+            # 持久化使用的类
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            # 数据源命名
+            dataSource: qzDS
+            misfireThreshold: 5000
+            # 数据库中表的前缀
+            tablePrefix: QRTZ_
+        threadPool:
+            threadCount: 10
+            threadPriority: 3
+            threadsInheritContextClassLoaderOfInitializingThread: true
+
+#qiniu
+qiniu:
+    access-key: ENC(qkVGoZ7r3ncoC3VBJhXN5QRDB9Sfa1mcK/QNToJ3/awa1lmtUxkIS4oXM4dfk56qp+G1xuVRZGM=)
+    bucket: ENC(R1tuiHsbEY/7EKNCxbNWSJjs8UYRQnHm)
+    domain-of-bucket: ENC(tdUHAbhbZWkzJTbO8JrbTYScQdnAa5ZuodK3ognU1Xi702IKLcdrBBhjHK1a/gfJ)
+    expire-in-seconds: -1
+    image:
+        bucket: ENC(h1ocyhcsWSFZE5z9b61lAnqW9cUWAVOx)
+        domain-of-bucket: ENC(7/xNg7oknWFAfAzxf+q81+uE8DaFvY6OvwWn9kI3ETveIFCLVvMbxJxmDoe+nAY0)
+        zone: huanan
+    secret-key: ENC(wunYPpVjDBDP2fVgswQTCRKj/hFxdKB+aYAhwdCzdj0IpD43nffbBCm3FUinYTB6Cws1KPxuBNU=)
+    zone: huadong
