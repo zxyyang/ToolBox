@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -105,7 +106,32 @@ public class CloudFileUploadController {
 	@ApiOperation(value = "/batchDelete", notes = "批量删除", httpMethod = "POST")
 	@PostMapping("/batchDelete")
 	public RequestBean<List<DeleteResult>> batchDelete(String[] name) throws Exception {
-		List<DeleteResult> deleteResultList = qiNiuUtil.batchDelete(name);
+		 List<String> dir = new ArrayList<>();
+		 List<String> file = new ArrayList<>();
+		List<DeleteResult> delDirs = new ArrayList<>();
+		for (String s : name) {
+			DeleteResult dirDeLs =new DeleteResult();
+			dirDeLs.setResult("succeed");
+			if(s.charAt(s.length()-1) == '/') {
+				dir.add(s);
+				dirDeLs.setName(s);
+				delDirs.add(dirDeLs);
+			}
+			else if (s.contains("(文件云端获取失败)")){
+				dir.add(s.replace("(文件云端获取失败)",""));
+				dirDeLs.setName(s);
+				delDirs.add(dirDeLs);
+			}
+			else {
+				file.add(s);
+			}
+		}
+		if (!CollectionUtils.isEmpty(dir)){
+			fileService.batchDelete(dir.toArray(new String[0]));
+		}
+		List<DeleteResult> deleteResultList = qiNiuUtil.batchDelete(file.toArray(new String[0]));
+
+		deleteResultList.addAll(delDirs);
 		List<String> list = new ArrayList<>();
 
 		// 取出只有成功的操作key

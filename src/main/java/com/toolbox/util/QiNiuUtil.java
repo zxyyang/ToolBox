@@ -3,10 +3,7 @@ package com.toolbox.util;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import com.alibaba.fastjson.JSONObject;
@@ -17,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
@@ -462,18 +460,37 @@ public class QiNiuUtil {
 	 */
 
 	public  List<Files> listByPath(String[] name) throws Exception {
+		List<Files> filesList = new ArrayList<>();
+		List<Files> dirList = new ArrayList<>();
+		//如果只有根目录
+		if (name.length == 0){
+			return null;
+		}
+		List<String> checkCould = new ArrayList<>();
+		for (String s : name) {
+			if (!s.endsWith("/")){
+				checkCould.add(s);
+			}else {
+				Files files = new Files();
+				files.setName(s);
+				files.setMimeType("文件夹");
+				dirList.add(files);
+			}
+		}
+		if (CollectionUtils.isEmpty(checkCould)){
+			return dirList;
+		}
+		String[] coulds = checkCould.toArray(new String[0]);
 		BucketManager bucketManager = configBucketManager();
-
 		try {
 			BucketManager.BatchOperations batchOperations = new BucketManager.BatchOperations();
-			batchOperations.addStatOps(qiNiuConfig.getBucket(), name);
+			batchOperations.addStatOps(qiNiuConfig.getBucket(), coulds);
 			Response response = bucketManager.batch(batchOperations);
 			BatchStatus[] batchStatusList = response.jsonToObject(BatchStatus[].class);
-			List<Files> filesList = new ArrayList<>();
 			for (int i = 0; i < batchStatusList.length; i++) {
 				Files files = new Files();
 				if (batchStatusList[i].code == 200) {
-					files.setName(name[i]);
+					files.setName(coulds[i]);
 					files.setSize(batchStatusList[i].data.fsize);
 					files.setMimeType(batchStatusList[i].data.mimeType);
 					SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -482,14 +499,15 @@ public class QiNiuUtil {
 					String lastSignTime = dateFormat.format(new Date(signtime));
 					files.setPutTime(lastSignTime);
 				} else {
-					if (name[i].endsWith("/")) {
-						files.setName(name[i]);
-					} else {
+//					if (coulds[i].endsWith("/")) {
+//						files.setName(name[i]);
+//					} else {
 						files.setName(name[i] + "(文件云端获取失败)");
-					}
+//					}
 				}
 				filesList.add(files);
 			}
+			filesList.addAll(dirList);
 			return filesList;
 
 		} catch (QiniuException e) {
