@@ -106,7 +106,7 @@ qiniu:
     expire-in-seconds: -1
     image:
         bucket: ENC(h1ocyhcsWSFZE5z9b61lAnqW9cUWAVOx)
-        domain-of-bucket: ENC(7/xNg7oknWFAfAzxf+q81+uE8DaFvY6OvwWn9kI3ETveIFCLVvMbxJxmDoe+nAY0)
+        domain-of-bucket: ENC(R9QGz5VTPKNEoL/+LHRjNAtYEW1uscsZ)
         zone: huanan
     secret-key: ENC(wunYPpVjDBDP2fVgswQTCRKj/hFxdKB+aYAhwdCzdj0IpD43nffbBCm3FUinYTB6Cws1KPxuBNU=)
     zone: huadong
