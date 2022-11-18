@@ -1,12 +1,15 @@
 package com.toolbox.controller;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.toolbox.service.LoginService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,8 +25,11 @@ import lombok.extern.slf4j.Slf4j;
 @Api(value = "/login", tags = { "登录" }, description = "登录接口")
 public class LoginController {
 
+	@Autowired
+	private LoginService loginService;
+
 	@GetMapping("/login")
-	public RequestBean<String> login(UserVO user) {
+	public RequestBean<UserVO> login(UserVO user)   {
 		user.setRememberMe(true);
 		// 用户认证信息
 		Subject subject = SecurityUtils.getSubject();
@@ -49,7 +55,11 @@ public class LoginController {
 			log.error(ExceptionUtil.stacktraceToString(e));
 			return RequestBean.Error("没有权限!");
 		}
-		return RequestBean.Success();
+		UserVO userByName = loginService.getUserByName(user.getUserName());
+		userByName.setSalt(null);
+		userByName.setRoleVOList(null);
+		userByName.setPassword(null);
+		return RequestBean.Success(userByName);
 	}
 
 }

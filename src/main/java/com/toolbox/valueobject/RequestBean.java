@@ -34,14 +34,14 @@ public class RequestBean<T> {
 	/**
 	 * 状态码 + 成功提示信息 + 数据
 	 */
-	public static <T> RequestBean<T> Success(T data) throws JsonProcessingException {
+	public static <T> RequestBean<T> Success(T data)   {
 		return new RequestBean<>(200, "success", data);
 	}
 
 	/**
 	 * 状态码 + 成功提示信息 + 数据
 	 */
-	public static <T> RequestBean<String> Success(String data) throws JsonProcessingException {
+	public static <T> RequestBean<String> Success(String data)   {
 		return new RequestBean<String>(200, "success", data);
 	}
 
