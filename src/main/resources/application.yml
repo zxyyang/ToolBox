@@ -102,7 +102,7 @@ org:
 qiniu:
     access-key: ENC(qkVGoZ7r3ncoC3VBJhXN5QRDB9Sfa1mcK/QNToJ3/awa1lmtUxkIS4oXM4dfk56qp+G1xuVRZGM=)
     bucket: ENC(R1tuiHsbEY/7EKNCxbNWSJjs8UYRQnHm)
-    domain-of-bucket: ENC(tdUHAbhbZWkzJTbO8JrbTYScQdnAa5ZuodK3ognU1Xi702IKLcdrBBhjHK1a/gfJ)
+    domain-of-bucket: ENC(0IGJBezVszl0dzD+qyepcR2S6UPNhs2W)
     expire-in-seconds: -1
     image:
         bucket: ENC(h1ocyhcsWSFZE5z9b61lAnqW9cUWAVOx)
