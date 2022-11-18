@@ -3,6 +3,7 @@ package com.toolbox.service.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.toolbox.util.EncryptUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ public class LoginServiceImpl implements LoginService {
 
 		userVO.setId(user.getID());
 		userVO.setUserName(user.getUserName());
-		userVO.setPassword(user.getPassword());
+		userVO.setPassword(EncryptUtil.decryptPassWord(user.getPassword(),user.getSalt()));
 		userVO.setSalt(user.getSalt());
 		userVO.setLabel(user.getLabel());
 

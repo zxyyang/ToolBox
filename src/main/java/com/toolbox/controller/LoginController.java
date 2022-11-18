@@ -1,5 +1,6 @@
 package com.toolbox.controller;
 
+import cn.hutool.core.exceptions.ExceptionUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -30,7 +31,7 @@ public class LoginController {
 		UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword(), user.getRememberMe());
 
 		if (StringUtils.isEmpty(user.getUserName()) || StringUtils.isEmpty(user.getPassword())) {
-			return RequestBean.Error("用户名或者密码错误！");
+			return RequestBean.Error("用户名或者密码为空！");
 		}
 
 		try {
@@ -39,10 +40,13 @@ public class LoginController {
 			// subject.checkRole("admin");
 			// subject.checkPermissions("query", "add");
 		} catch (UnknownAccountException e) {
-			return RequestBean.Error("用户名或者密码错误！");
+			log.error(ExceptionUtil.stacktraceToString(e));
+			return RequestBean.Error(e.getMessage());
 		} catch (AuthenticationException e) {
+			log.error(ExceptionUtil.stacktraceToString(e));
 			return RequestBean.Error("用户名或者密码错误！");
 		} catch (AuthorizationException e) {
+			log.error(ExceptionUtil.stacktraceToString(e));
 			return RequestBean.Error("没有权限!");
 		}
 		return RequestBean.Success();

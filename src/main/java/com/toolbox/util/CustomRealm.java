@@ -68,7 +68,13 @@ public class CustomRealm extends AuthorizingRealm {
 		String password = new String(usernamePasswordToken.getPassword());
 
 		// 查询用户名称
-		User user = userMapper.queryByName(username);
+		UserVO userVO = loginService.getUserByName(username);
+		User user = new User();
+		user.setID(userVO.getId());
+		user.setUserName(userVO.getUserName());
+		user.setPassword(userVO.getPassword());
+		user.setSalt(userVO.getSalt());
+		user.setLabel(userVO.getLabel());
 		if (user == null) {
 			throw new UnknownAccountException("用户名或密码错误！");
 		} else if (!password.equals(user.getPassword())) {
