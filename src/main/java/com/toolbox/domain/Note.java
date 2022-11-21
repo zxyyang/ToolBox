@@ -28,8 +28,6 @@ public class Note {
 	@Column(name = "`note.note_remark`")
 	private String noteRemark;
 
-	@Column(name = "`note.note_type`")
-	private String noteType;
 
 	@Column(name = "`note.note_time`")
 	private String noteTime;
