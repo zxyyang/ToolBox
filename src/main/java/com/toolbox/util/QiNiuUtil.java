@@ -356,11 +356,32 @@ public class QiNiuUtil {
 		}
 
 	}
-
-	public  down_ret downloadByUrl(String fileName) throws IOException {
+/**
+ *@name: 调用打开地址
+ *@version: 1.0.0
+ *@author: zixuan.yang
+ **/
+	public  down_ret downloadAndOpen(String fileName) {
 		String domain = qiNiuConfig.getDomainOfBucket();
 		// 封装下载链接
 		String targetUrl = "http://" + domain + "/" + fileName;
+		String downloadUrl = getDownloadUrl(targetUrl);
+		down_ret down_ret = new down_ret();
+
+		down_ret.setFileName(fileName);
+		down_ret.setFileUrl(downloadUrl);
+		return down_ret;
+	}
+
+	/**
+	 *@name: 调用浏览器直接下载
+	 *@version: 1.0.0
+	 *@author: zixuan.yang
+	 **/
+	public  down_ret downloadByFileName(String fileName) {
+		String domain = qiNiuConfig.getDomainOfBucket();
+		// 封装下载链接
+		String targetUrl = "http://" + domain + "/" + fileName+"?attname=";
 		String downloadUrl = getDownloadUrl(targetUrl);
 		down_ret down_ret = new down_ret();
 

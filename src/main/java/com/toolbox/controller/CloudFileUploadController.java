@@ -67,9 +67,9 @@ public class CloudFileUploadController {
 	@RequiresPermissions(value = { "down" })
 	@ApiOperation(value = "/downLoad", notes = "url下载", httpMethod = "GET")
 	@GetMapping("/downLoad")
-	public RequestBean<down_ret> downLoad(String fileName) throws IOException {
+	public RequestBean<down_ret> downLoad(String fileName)  {
 
-		return RequestBean.Success(qiNiuUtil.downloadByUrl(fileName));
+		return RequestBean.Success(qiNiuUtil.downloadByFileName(fileName));
 	}
 
 	@RequiresPermissions(value = { "list" })
