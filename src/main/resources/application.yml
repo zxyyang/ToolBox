@@ -36,7 +36,7 @@ spring:
         #password: root
         password: ENC(HzNK3kz06T+8SNBex8soag==)
         url: jdbc:mysql://127.0.0.1:3306/toolbox?serverTimezone=GMT%2B8&useSSL=true
-        username: root
+        username: toolbox
         #本地
 #    redis:
 #        database: 10
@@ -46,8 +46,8 @@ spring:
     redis:
         database: 1
         host: 127.0.0.1
-        port: 16379
-        password: ENC(/3xTmnXNqdopzF30v1rbzg==)
+        port: 6379
+        #password: ENC(/3xTmnXNqdopzF30v1rbzg==)
     servlet:
         multipart:
             enabled: true
@@ -84,7 +84,7 @@ org:
                 maxConnections: 10
                 password: ENC(YhQNwbKLhEYPLw3w2LC0jQ==)
                 #password: root
-                user: root
+                user: toolbox
         jobStore:
             # 持久化使用的类
             class: org.quartz.impl.jdbcjobstore.JobStoreTX
